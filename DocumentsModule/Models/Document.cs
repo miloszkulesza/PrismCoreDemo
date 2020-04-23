@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Models
+namespace DocumentsModule.Models
 {
     public class Document
     {

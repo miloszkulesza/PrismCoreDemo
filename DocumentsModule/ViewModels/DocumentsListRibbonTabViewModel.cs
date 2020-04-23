@@ -29,7 +29,7 @@ namespace DocumentsModule.ViewModels
             } 
         }
 
-        public DelegateCommand ExitViewCommand { get; set; }
+        public DelegateCommand CloseViewCommand { get; set; }
 
         public DocumentsListRibbonTabViewModel(
             IRegionManager regionManager)
@@ -40,17 +40,15 @@ namespace DocumentsModule.ViewModels
 
         private void RegisterCommands()
         {
-            ExitViewCommand = new DelegateCommand(OnExitViewCommand);
+            CloseViewCommand = new DelegateCommand(OnCloseViewCommand);
         }
 
-        private void OnExitViewCommand()
+        private void OnCloseViewCommand()
         {
             var ribbonTab = regionManager.Regions[RegionNames.RibbonRegion].Views.FirstOrDefault(x => x.GetType() == typeof(DocumentsListRibbonTab));
             var view = regionManager.Regions[RegionNames.ViewRegion].Views.FirstOrDefault(x => x.GetType() == typeof(DocumentsList));
             regionManager.Regions[RegionNames.RibbonRegion].Remove(ribbonTab);
             regionManager.Regions[RegionNames.ViewRegion].Remove(view);
-            RibbonTab selectedRibbon = regionManager.Regions[RegionNames.RibbonRegion].Views.LastOrDefault() as RibbonTab;
-            selectedRibbon.IsSelected = true;
             if (regionManager.Regions[RegionNames.ViewRegion].Views.Any())
                 regionManager.Regions[RegionNames.ViewRegion].Activate(regionManager.Regions[RegionNames.ViewRegion].Views.LastOrDefault());
         }

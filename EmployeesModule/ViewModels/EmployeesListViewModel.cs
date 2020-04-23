@@ -1,6 +1,6 @@
-﻿using EmployeesModule.Views;
+﻿using EmployeesModule.Models;
+using EmployeesModule.Views;
 using Infrastructure.Consts;
-using Infrastructure.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -21,7 +21,7 @@ namespace EmployeesModule.ViewModels
         private readonly IRegionManager regionManager;
 
         public ICommand SelectionChangedCommand { get; set; }
-        public DelegateCommand ExitViewCommand { get; set; }
+        public DelegateCommand CloseViewCommand { get; set; }
         public DelegateCommand RemoveEmployeeCommand { get; set; }
 
         private bool isTabSelected;
@@ -108,7 +108,7 @@ namespace EmployeesModule.ViewModels
         private void RegisterCommands()
         {
             SelectionChangedCommand = new DelegateCommand(OnSelectedItemChanged);
-            ExitViewCommand = new DelegateCommand(OnExitView);
+            CloseViewCommand = new DelegateCommand(OnCloseView);
             RemoveEmployeeCommand = new DelegateCommand(OnRemoveSelectedEmployee);
         }
 
@@ -120,14 +120,14 @@ namespace EmployeesModule.ViewModels
                 DeleteButtonState = false;
         }
 
-        private void OnExitView()
+        private void OnCloseView()
         {
             var ribbonTab = regionManager.Regions[RegionNames.RibbonRegion].Views.FirstOrDefault(x => x.GetType() == typeof(EmployeesListRibbonTab));
             var view = regionManager.Regions[RegionNames.ViewRegion].Views.FirstOrDefault(x => x.GetType() == typeof(EmployeesList));
             regionManager.Regions[RegionNames.RibbonRegion].Remove(ribbonTab);
             regionManager.Regions[RegionNames.ViewRegion].Remove(view);
-            RibbonTab selectedRibbon = regionManager.Regions[RegionNames.RibbonRegion].Views.LastOrDefault() as RibbonTab;
-            selectedRibbon.IsSelected = true;
+            //RibbonTab selectedRibbon = regionManager.Regions[RegionNames.RibbonRegion].Views.LastOrDefault() as RibbonTab;
+            //selectedRibbon.IsSelected = true;
             if (regionManager.Regions[RegionNames.ViewRegion].Views.Any())
                 regionManager.Regions[RegionNames.ViewRegion].Activate(regionManager.Regions[RegionNames.ViewRegion].Views.LastOrDefault());
         }

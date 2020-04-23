@@ -12,7 +12,7 @@
              ContextualTabGroupHeader="Pracownicy">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj"/>
-        <RibbonButton LargeImageSource="/Images/delete.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveEmployeeCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/quit.png" Label="Zamknij" Command="{Binding ExitViewCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/remove.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveEmployeeCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

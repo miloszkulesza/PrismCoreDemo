@@ -9,9 +9,9 @@
   <ItemGroup>
     <None Remove="Images\1353183085_save.png" />
     <None Remove="Images\add.png" />
+    <None Remove="Images\close.png" />
     <None Remove="Images\copy.png" />
     <None Remove="Images\cut.png" />
-    <None Remove="Images\delete.png" />
     <None Remove="Images\format_painter.png" />
     <None Remove="Images\go-next.png" />
     <None Remove="Images\go-previous.png" />
@@ -22,6 +22,7 @@
     <None Remove="Images\personal.png" />
     <None Remove="Images\quit.png" />
     <None Remove="Images\redo.png" />
+    <None Remove="Images\remove.png" />
     <None Remove="Images\save.png" />
     <None Remove="Images\undo.png" />
   </ItemGroup>
@@ -42,7 +43,7 @@
     <Resource Include="Images\add.png" />
     <Resource Include="Images\copy.png" />
     <Resource Include="Images\cut.png" />
-    <Resource Include="Images\delete.png" />
+    <Resource Include="Images\close.png" />
     <Resource Include="Images\format_painter.png" />
     <Resource Include="Images\go-next.png" />
     <Resource Include="Images\go-previous.png" />
@@ -53,6 +54,7 @@
     <Resource Include="Images\personal.png" />
     <Resource Include="Images\quit.png" />
     <Resource Include="Images\redo.png" />
+    <Resource Include="Images\remove.png" />
     <Resource Include="Images\save.png" />
     <Resource Include="Images\undo.png" />
   </ItemGroup>

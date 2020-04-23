@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 
-namespace Infrastructure.Adapters
+namespace Infrastructure.RegionAdapters
 {
     public class RibbonRegionAdapter : RegionAdapterBase<Ribbon>
     {
@@ -32,7 +32,7 @@ namespace Infrastructure.Adapters
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        foreach (FrameworkElement element in e.NewItems)
+                        foreach (RibbonTab element in e.NewItems)
                         {
                             regionTarget.Items.Add(element);
                             regionTarget.SelectedItem = element;
@@ -40,7 +40,7 @@ namespace Infrastructure.Adapters
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (UIElement elementLoopVariable in e.OldItems)
+                        foreach (RibbonTab elementLoopVariable in e.OldItems)
                         {
                             var element = elementLoopVariable;
                             if (regionTarget.Items.Contains(element))
@@ -48,6 +48,7 @@ namespace Infrastructure.Adapters
                                 regionTarget.Items.Remove(element);
                             }
                         }
+                        regionTarget.SelectedIndex = regionTarget.Items.Count - 1;
                         break;
                 }
             };

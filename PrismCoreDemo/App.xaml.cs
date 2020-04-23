@@ -1,4 +1,4 @@
-﻿using Infrastructure.Adapters;
+﻿using Infrastructure.RegionAdapters;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
