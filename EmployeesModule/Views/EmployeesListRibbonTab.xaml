@@ -8,10 +8,9 @@
              d:DesignWidth="800"
              Header="Pracownicy"
              xmlns:prism="http://prismlibrary.com/"
-           prism:ViewModelLocator.AutoWireViewModel="True"
-           xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-           IsSelected="{Binding IsTabSelected, Mode=TwoWay}">
-
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             IsSelected="{Binding IsTabSelected, Mode=TwoWay}"
+             ContextualTabGroupHeader="Pracownicy">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj"/>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/quit.png" Label="Zamknij" Command="{Binding ExitViewCommand}" />

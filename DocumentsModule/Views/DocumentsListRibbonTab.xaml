@@ -9,7 +9,8 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              Header="Dokumenty"
            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-           IsSelected="{Binding IsTabSelected, Mode=TwoWay}">
+           IsSelected="{Binding IsTabSelected, Mode=TwoWay}"
+           ContextualTabGroupHeader="Dokumenty">    
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj"/>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/quit.png" Label="Zamknij" Command="{Binding ExitViewCommand}" />
