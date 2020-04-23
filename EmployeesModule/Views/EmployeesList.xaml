@@ -7,8 +7,34 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             >
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+    <UserControl.Resources>
+        <Style TargetType="ListView">
+            <Setter Property="FontSize" Value="22" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <TextBlock FontSize="40" Text="{Binding Message}" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <ListView HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Employees}"
+                      SelectedItem="{Binding SelectedEmployee}"
+                      SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Imie" Width="Auto" DisplayMemberBinding="{Binding FirstName}" />
+                        <GridViewColumn Header="Nazwisko" Width="Auto" DisplayMemberBinding="{Binding LastName}" />
+                        <GridViewColumn Header="Wiek" Width="Auto" DisplayMemberBinding="{Binding Age}" />
+                        <GridViewColumn Header="Stanowisko" Width="Auto" DisplayMemberBinding="{Binding Position}" />
+                        <GridViewColumn Header="Email" Width="Auto" DisplayMemberBinding="{Binding Email}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </UserControl>

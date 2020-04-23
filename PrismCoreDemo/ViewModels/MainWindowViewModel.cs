@@ -33,7 +33,7 @@ namespace PrismCoreDemo.ViewModels
         private void OnEmployeesCommand()
         {
             regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeesList", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, "EmployeesListRibbonTab");
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeesListRibbonTab", UriKind.Relative));
         }
 
         private void OnDocumentsCommand()
