@@ -1,0 +1,13 @@
+﻿<RibbonTab x:Class="PrismCoreDemo.Controls.ShellRibbonTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+            Header="Home">
+
+    <RibbonGroup x:Name="ClipboardGroup" Header="Moduły">
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/personal.png" Label="Pracownicy" Command="{Binding EmployeesCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/copy.png" Label="Dokumenty" Command="{Binding DocumentsCommand}" />
+    </RibbonGroup>
+</RibbonTab>

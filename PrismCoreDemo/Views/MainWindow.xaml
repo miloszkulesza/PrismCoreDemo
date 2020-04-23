@@ -1,0 +1,29 @@
+﻿<RibbonWindow x:Class="PrismCoreDemo.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PrismCoreDemo"
+        xmlns:controls="clr-namespace:PrismCoreDemo.Controls"
+        mc:Ignorable="d"
+        Title="Prism Core Demo" Height="450" Width="800"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Ribbon Grid.Row="0" prism:RegionManager.RegionName="RibbonRegion">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem Header="Opcje" ImageSource="pack://application:,,,/Images/options.png" />
+                    <RibbonApplicationMenuItem Header="Wyjście" ImageSource="pack://application:,,,/Images/quit.png" Command="{Binding ExitCommand}" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+        </Ribbon>
+        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="ViewRegion" />
+    </Grid>
+</RibbonWindow>
