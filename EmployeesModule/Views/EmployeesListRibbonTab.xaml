@@ -13,6 +13,7 @@
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj" Command="{Binding AddEmployeeCommand}"/>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/remove.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveEmployeeCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/edit.png" Label="Edytuj" IsEnabled="{Binding DeleteButtonState}" Command="{Binding EditEmployeeCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

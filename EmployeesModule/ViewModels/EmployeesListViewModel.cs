@@ -24,6 +24,7 @@ namespace EmployeesModule.ViewModels
         public DelegateCommand SelectionChangedCommand { get; set; }
         public DelegateCommand RemoveEmployeeCommand { get; set; }
         public DelegateCommand AddEmployeeCommand { get; set; }
+        public DelegateCommand EditEmployeeCommand { get; set; }
         #endregion
 
         #region properties
@@ -79,6 +80,7 @@ namespace EmployeesModule.ViewModels
             SelectionChangedCommand = new DelegateCommand(OnSelectedItemChanged);
             RemoveEmployeeCommand = new DelegateCommand(OnRemoveSelectedEmployee);
             AddEmployeeCommand = new DelegateCommand(OnAddEmployee);
+            EditEmployeeCommand = new DelegateCommand(OnEditEmployee);
         }
 
         private void OnSelectedItemChanged()
@@ -98,6 +100,12 @@ namespace EmployeesModule.ViewModels
         {
             regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeeEdit", UriKind.Relative));
             regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeeEditRibbonTab", UriKind.Relative));
+        }
+
+        private void OnEditEmployee()
+        {
+            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeeEdit", UriKind.Relative));
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeeEditRibbonTab", UriKind.Relative), new NavigationParameters($"?employeeId={SelectedEmployee.Id}"));
         }
         #endregion
 

@@ -7,6 +7,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace EmployeesModule.ViewModels
@@ -88,7 +89,10 @@ namespace EmployeesModule.ViewModels
             base.OnNavigatedTo(navigationContext);
             if(navigationContext.Parameters.Count > 0)
             {
-                Title = "Edycja pracownika";
+                int id = navigationContext.Parameters.GetValue<int>("employeeId");
+                Employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == id);
+                Title = $"Edycja {Employee.FirstName} {Employee.LastName}";
+                SaveButtonState = true;
             }
             else
             {
