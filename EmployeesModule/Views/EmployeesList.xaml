@@ -22,7 +22,7 @@
                       SelectionMode="Single">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
+                        <prism:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <ListView.View>

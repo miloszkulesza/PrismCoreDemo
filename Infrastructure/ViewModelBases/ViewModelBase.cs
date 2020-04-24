@@ -4,14 +4,16 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace Infrastructure.ViewModelBases
 {
-    public class ViewModelBase : BindableBase
+    public class ViewModelBase : BindableBase, INavigationAware, INotifyPropertyChanged
     {
-        private readonly IRegionManager regionManager;
+        public readonly IRegionManager regionManager;
+
         public DelegateCommand CloseViewCommand { get; set; }
 
         private bool isTabSelected;
@@ -72,6 +74,21 @@ namespace Infrastructure.ViewModelBases
         {
             if (IsTabSelected)
                 regionManager.Regions[RegionNames.ViewRegion].Activate(regionManager.Regions[RegionNames.ViewRegion].Views.FirstOrDefault(x => x.GetType() == DefaultViewType));
+        }
+
+        public virtual void OnNavigatedTo(NavigationContext navigationContext)
+        {
+           
+        }
+
+        public virtual bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public virtual void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+           
         }
     }
 }

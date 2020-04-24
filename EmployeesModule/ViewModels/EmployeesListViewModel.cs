@@ -9,17 +9,24 @@ using Infrastructure.DataAccess;
 using Prism.Events;
 using Infrastructure.Events;
 using System;
+using Infrastructure.Consts;
 
 namespace EmployeesModule.ViewModels
 {
     public class EmployeesListViewModel : ViewModelBase
     {
+        #region private members
         private readonly IEmployeesRepository employeesRepository;
         private readonly IEventAggregator eventAggregator;
+        #endregion
 
-        public ICommand SelectionChangedCommand { get; set; }
+        #region commands
+        public DelegateCommand SelectionChangedCommand { get; set; }
         public DelegateCommand RemoveEmployeeCommand { get; set; }
+        public DelegateCommand AddEmployeeCommand { get; set; }
+        #endregion
 
+        #region properties
         private bool deleteButtonState;
         public bool DeleteButtonState
         {
@@ -47,7 +54,9 @@ namespace EmployeesModule.ViewModels
                 SetProperty(ref selectedEmployee, value);
             }
         }
+        #endregion
 
+        #region ctor
         public EmployeesListViewModel(
             IRegionManager regionManager,
             IEmployeesRepository employeesRepository,
@@ -62,7 +71,37 @@ namespace EmployeesModule.ViewModels
             this.eventAggregator.GetEvent<EmployeeUpdatedEvent>().Subscribe(OnEmployeeUpdatedEvent);
             this.eventAggregator.GetEvent<EmployeeDeletedEvent>().Subscribe(OnEmployeeDeletedEvent);
         }
+        #endregion
 
+        #region private methods
+        private void RegisterCommands()
+        {
+            SelectionChangedCommand = new DelegateCommand(OnSelectedItemChanged);
+            RemoveEmployeeCommand = new DelegateCommand(OnRemoveSelectedEmployee);
+            AddEmployeeCommand = new DelegateCommand(OnAddEmployee);
+        }
+
+        private void OnSelectedItemChanged()
+        {
+            if (SelectedEmployee != null)
+                DeleteButtonState = true;
+            else
+                DeleteButtonState = false;
+        }
+
+        private void OnRemoveSelectedEmployee()
+        {
+            employeesRepository.Delete(SelectedEmployee);
+        }
+
+        private void OnAddEmployee()
+        {
+            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeeEdit", UriKind.Relative));
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeeEditRibbonTab", UriKind.Relative));
+        }
+        #endregion
+
+        #region event handlers
         private void OnEmployeeDeletedEvent(Employee obj)
         {
             Employees.Remove(obj);
@@ -81,24 +120,6 @@ namespace EmployeesModule.ViewModels
         {
             Employees.Add(obj);
         }
-
-        private void RegisterCommands()
-        {
-            SelectionChangedCommand = new DelegateCommand(OnSelectedItemChanged);
-            RemoveEmployeeCommand = new DelegateCommand(OnRemoveSelectedEmployee);
-        }
-
-        private void OnSelectedItemChanged()
-        {
-            if (SelectedEmployee != null)
-                DeleteButtonState = true;
-            else
-                DeleteButtonState = false;
-        }
-
-        private void OnRemoveSelectedEmployee()
-        {
-            employeesRepository.Delete(SelectedEmployee);
-        }
+        #endregion
     }
 }

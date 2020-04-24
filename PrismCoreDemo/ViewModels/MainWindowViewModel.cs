@@ -39,7 +39,7 @@ namespace PrismCoreDemo.ViewModels
         private void OnDocumentsCommand()
         {
             regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("DocumentsList", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, "DocumentsListRibbonTab");
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("DocumentsListRibbonTab", UriKind.Relative));
         }
 
         private void OnExitCommand()

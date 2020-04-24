@@ -22,13 +22,17 @@ namespace EmployeesModule
         public void OnInitialized(IContainerProvider containerProvider)
         {
             unityContainer.RegisterType<EmployeesListViewModel>(new ContainerControlledLifetimeManager());
+            unityContainer.RegisterType<EmployeeEditViewModel>(new ContainerControlledLifetimeManager());
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             ViewModelLocationProvider.Register<EmployeesListRibbonTab, EmployeesListViewModel>();
+            ViewModelLocationProvider.Register<EmployeeEditRibbonTab, EmployeeEditViewModel>();
             containerRegistry.RegisterForNavigation(typeof(EmployeesListRibbonTab), "EmployeesListRibbonTab");
             containerRegistry.RegisterForNavigation(typeof(EmployeesList), "EmployeesList");
+            containerRegistry.RegisterForNavigation(typeof(EmployeeEditRibbonTab), "EmployeeEditRibbonTab");
+            containerRegistry.RegisterForNavigation(typeof(EmployeeEdit), "EmployeeEdit");
         }
     }
 }

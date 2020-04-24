@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="EmployeesModule.Views.EmployeeEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EmployeesModule.Views"
+             mc:Ignorable="d"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,40,2" />
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="true">
+                            <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                                <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+                                </TextBlock>
+                            </Border>
+                            <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                                <Border BorderBrush="red" BorderThickness="1" />
+                            </AdornedElementPlaceholder>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Margin="5">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" 
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Imię:" />
+        <Label Grid.Row="1" 
+               Grid.Column="0" 
+               Margin="5"
+               Content="Nazwisko:" />
+        <Label Grid.Row="2"
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Wiek:" />
+        <Label Grid.Row="3" 
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Email:" />
+        <Label Grid.Row="4" 
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Stanowisko:" />
+
+        <TextBox Grid.Row="0" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Width="200" 
+                 Text="{Binding Employee.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                 VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="1" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Text="{Binding Employee.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                 VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="2"
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Text="{Binding Employee.Age, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                 VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="3" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Text="{Binding Employee.Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                 VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="4" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Text="{Binding Employee.Position, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+                 VerticalContentAlignment="Center" />
+    </Grid>
+</UserControl>
