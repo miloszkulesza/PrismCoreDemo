@@ -41,7 +41,6 @@ namespace PrismCoreDemo
         {
             base.ConfigureModuleCatalog(moduleCatalog);
             moduleCatalog.AddModule(typeof(EmployeesModule.EmployeesModule));
-            moduleCatalog.AddModule(typeof(DocumentsModule.DocumentsModule));
         }
     }
 }

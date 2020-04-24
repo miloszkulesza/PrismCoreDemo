@@ -13,7 +13,6 @@ namespace PrismCoreDemo.ViewModels
         private readonly IRegionManager regionManager;
 
         public DelegateCommand EmployeesCommand { get; set; }
-        public DelegateCommand DocumentsCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
 
         public MainWindowViewModel(IRegionManager regionManager)
@@ -26,7 +25,6 @@ namespace PrismCoreDemo.ViewModels
         private void RegisterCommands()
         {
             EmployeesCommand = new DelegateCommand(OnEmployeesCommand);
-            DocumentsCommand = new DelegateCommand(OnDocumentsCommand);
             ExitCommand = new DelegateCommand(OnExitCommand);
         }
 
@@ -34,12 +32,6 @@ namespace PrismCoreDemo.ViewModels
         {
             regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeesList", UriKind.Relative));
             regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeesListRibbonTab", UriKind.Relative));
-        }
-
-        private void OnDocumentsCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("DocumentsList", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("DocumentsListRibbonTab", UriKind.Relative));
         }
 
         private void OnExitCommand()
