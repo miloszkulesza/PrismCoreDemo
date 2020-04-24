@@ -1,4 +1,5 @@
-﻿using Infrastructure.RegionAdapters;
+﻿using Infrastructure.DataAccess;
+using Infrastructure.RegionAdapters;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -24,6 +25,7 @@ namespace PrismCoreDemo
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<Object, ShellRibbonTab>("ShellRibbonTab");
+            containerRegistry.Register<IEmployeesRepository, EmployeesRepository>();
         }
 
         protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)

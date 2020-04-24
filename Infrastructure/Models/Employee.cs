@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmployeesModule.Models
+namespace Infrastructure.Models
 {
     public class Employee
     {

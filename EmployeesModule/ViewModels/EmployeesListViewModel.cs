@@ -1,15 +1,22 @@
-﻿using EmployeesModule.Models;
+﻿using Infrastructure.Models;
 using EmployeesModule.Views;
 using Infrastructure.ViewModelBases;
 using Prism.Commands;
 using Prism.Regions;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Infrastructure.DataAccess;
+using Prism.Events;
+using Infrastructure.Events;
+using System;
 
 namespace EmployeesModule.ViewModels
 {
     public class EmployeesListViewModel : ViewModelBase
     {
+        private readonly IEmployeesRepository employeesRepository;
+        private readonly IEventAggregator eventAggregator;
+
         public ICommand SelectionChangedCommand { get; set; }
         public DelegateCommand RemoveEmployeeCommand { get; set; }
 
@@ -26,36 +33,7 @@ namespace EmployeesModule.ViewModels
             }
         }
 
-        public static ObservableCollection<Employee> Employees { get; set; } = new ObservableCollection<Employee>
-        {
-            new Employee
-            {
-                Id = 1,
-                FirstName = "Jan",
-                LastName = "Kowalski",
-                Age = 30,
-                Position = "Programista",
-                Email = "jkowalski@gmail.com"
-            },
-            new Employee
-            {
-                Id = 2,
-                FirstName = "Adam",
-                LastName = "Nowak",
-                Age = 35,
-                Position = "Doradca klienta",
-                Email = "anowak@gmail.com"
-            },
-            new Employee
-            {
-                Id = 3,
-                FirstName = "Anna",
-                LastName = "Kowalska",
-                Age = 25,
-                Position = "Sekretarka",
-                Email = "akowalska@gmail.com"
-            }
-        };
+        public static ObservableCollection<Employee> Employees { get; set; }
 
         private Employee selectedEmployee;
         public Employee SelectedEmployee
@@ -71,10 +49,37 @@ namespace EmployeesModule.ViewModels
         }
 
         public EmployeesListViewModel(
-            IRegionManager regionManager): base(regionManager, typeof(EmployeesList), typeof(EmployeesListRibbonTab))
+            IRegionManager regionManager,
+            IEmployeesRepository employeesRepository,
+            IEventAggregator eventAggregator): base(regionManager, typeof(EmployeesList), typeof(EmployeesListRibbonTab))
         {
+            this.employeesRepository = employeesRepository;
+            this.eventAggregator = eventAggregator;
+            Employees = new ObservableCollection<Employee>(employeesRepository.Employees);
             DeleteButtonState = false;
             RegisterCommands();
+            this.eventAggregator.GetEvent<EmployeeAddedEvent>().Subscribe(OnEmployeeAddedEvent);
+            this.eventAggregator.GetEvent<EmployeeUpdatedEvent>().Subscribe(OnEmployeeUpdatedEvent);
+            this.eventAggregator.GetEvent<EmployeeDeletedEvent>().Subscribe(OnEmployeeDeletedEvent);
+        }
+
+        private void OnEmployeeDeletedEvent(Employee obj)
+        {
+            Employees.Remove(obj);
+        }
+
+        private void OnEmployeeUpdatedEvent(Employee obj)
+        {
+            for (int i = 0; i < Employees.Count; i++)
+            {
+                if (Employees[i].Id == obj.Id)
+                    Employees[i] = obj;
+            }
+        }
+
+        private void OnEmployeeAddedEvent(Employee obj)
+        {
+            Employees.Add(obj);
         }
 
         private void RegisterCommands()
@@ -93,7 +98,7 @@ namespace EmployeesModule.ViewModels
 
         private void OnRemoveSelectedEmployee()
         {
-            Employees.Remove(SelectedEmployee);
+            employeesRepository.Delete(SelectedEmployee);
         }
     }
 }
