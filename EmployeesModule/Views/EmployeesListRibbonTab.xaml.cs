@@ -8,9 +8,8 @@ namespace EmployeesModule.Views
     /// </summary>
     public partial class EmployeesListRibbonTab : RibbonTab
     {
-        public EmployeesListRibbonTab(EmployeesListViewModel viewModel)
+        public EmployeesListRibbonTab()
         {
-            DataContext = viewModel;
             InitializeComponent();
         }
     }

@@ -9,7 +9,8 @@
              Header="Pracownicy"
              xmlns:prism="http://prismlibrary.com/"
              IsSelected="{Binding IsTabSelected}"
-             ContextualTabGroupHeader="Pracownicy">
+             ContextualTabGroupHeader="Pracownicy"
+             prism:ViewModelLocator.AutoWireViewModel="True">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj"/>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/remove.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveEmployeeCommand}" />
