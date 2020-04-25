@@ -25,6 +25,7 @@
             </Ribbon.ApplicationMenu>
             <Ribbon.ContextualTabGroups>
                 <RibbonContextualTabGroup Header="Pracownicy" Visibility="Visible" Background="Green" />
+                <RibbonContextualTabGroup Header="Zadania" Visibility="Visible" Background="Orange" />
             </Ribbon.ContextualTabGroups>
         </Ribbon>
         <ContentControl Grid.Row="1" prism:RegionManager.RegionName="ViewRegion" />

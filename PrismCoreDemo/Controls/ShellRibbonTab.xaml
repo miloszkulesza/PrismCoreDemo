@@ -8,5 +8,6 @@
 
     <RibbonGroup x:Name="ClipboardGroup" Header="Moduły">
         <RibbonButton LargeImageSource="pack://application:,,,/Images/personal.png" Label="Pracownicy" Command="{Binding EmployeesCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/paste.png" Label="Zadania" Command="{Binding TasksCommand}" />
     </RibbonGroup>
 </RibbonTab>

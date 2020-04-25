@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeesModule", "Employee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C48669EE-006A-4920-86D3-F27003F22248}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksModule", "TasksModule\TasksModule.csproj", "{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C48669EE-006A-4920-86D3-F27003F22248}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C48669EE-006A-4920-86D3-F27003F22248}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C48669EE-006A-4920-86D3-F27003F22248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
