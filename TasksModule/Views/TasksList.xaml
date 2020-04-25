@@ -6,8 +6,75 @@
              xmlns:local="clr-namespace:TasksModule.Views"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+    <UserControl.Resources>
+        <Style TargetType="ListView">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+        <DataTemplate x:Key="isSucceededDataTemplate">
+            <TextBlock x:Name="textBlock" />
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
+                    <Setter TargetName="textBlock" Property="Text" Value="Sukces" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
+                    <Setter TargetName="textBlock" Property="Text" Value="Porażka" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="{x:Null}">
+                    <Setter TargetName="textBlock" Property="Text" Value="Niezakończone" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <Style TargetType="{x:Type ListViewItem}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
+                    <Setter Property="ListViewItem.Background" Value="OrangeRed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
+                    <Setter Property="ListViewItem.Background" Value="Green" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid>
-        <TextBlock FontSize="30" Text="Lista zadań" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <ListView HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Tasks}"
+                      SelectedItem="{Binding SelectedTask}"
+                      SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <prism:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Data" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TaskDate,  StringFormat='{}{0:MM/dd/yyyy}'}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Nazwa" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Opis" Width="250">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Pracownik" Width="Auto" DisplayMemberBinding="{Binding Employee}" />
+                        <GridViewColumn Header="Stan" Width="Auto" CellTemplate="{StaticResource isSucceededDataTemplate}">
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </UserControl>
