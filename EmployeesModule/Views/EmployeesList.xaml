@@ -10,7 +10,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
     <UserControl.Resources>
         <Style TargetType="ListView">
-            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontSize" Value="16" />
         </Style>
     </UserControl.Resources>
     <Grid>
