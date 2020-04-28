@@ -10,5 +10,7 @@ namespace Infrastructure.DataAccess
         IList<Task> Tasks { get; }
         void Save(Task task);
         void Delete(Task task);
+        void TaskSuccess(Task task);
+        void TaskFail(Task task);
     }
 }

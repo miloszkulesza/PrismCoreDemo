@@ -25,8 +25,8 @@ namespace PrismCoreDemo
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<Object, ShellRibbonTab>("ShellRibbonTab");
-            containerRegistry.Register<IEmployeesRepository, EmployeesRepository>();
-            containerRegistry.Register<ITasksRepository, TasksRepository>();
+            containerRegistry.RegisterSingleton<IEmployeesRepository, EmployeesRepository>();
+            containerRegistry.RegisterSingleton<ITasksRepository, TasksRepository>();
         }
 
         protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)

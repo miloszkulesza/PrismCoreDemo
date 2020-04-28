@@ -19,9 +19,9 @@ namespace Infrastructure.DataAccess
 
         public IList<Task> Tasks { get; } = new List<Task>
         {
-            new Task { EmployeeId = 1, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = DateTime.Now, IsSucceeded = null },
-            new Task { EmployeeId = 3, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = DateTime.Now, IsSucceeded = true },
-            new Task { EmployeeId = 2, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = DateTime.Now, IsSucceeded = false }
+            new Task { Id = 1, EmployeeId = 1, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 27), IsSucceeded = null },
+            new Task { Id = 2, EmployeeId = 3, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 24), IsSucceeded = true },
+            new Task { Id = 3, EmployeeId = 2, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 20), IsSucceeded = false }
         };
 
         public void Delete(Task task)
@@ -47,6 +47,26 @@ namespace Infrastructure.DataAccess
                 Tasks.Add(task);
                 eventAggregator.GetEvent<TaskAddedEvent>().Publish(task);
             }
+        }
+
+        public void TaskFail(Task task)
+        {
+            for (int i = 0; i < Tasks.Count; i++)
+            {
+                if (Tasks[i].Id == task.Id)
+                    Tasks[i].IsSucceeded = false;
+            }
+            eventAggregator.GetEvent<TaskFailedEvent>().Publish(task);
+        }
+
+        public void TaskSuccess(Task task)
+        {
+            for (int i = 0; i < Tasks.Count; i++)
+            {
+                if (Tasks[i].Id == task.Id)
+                    Tasks[i].IsSucceeded = true;
+            }
+            eventAggregator.GetEvent<TaskSucceededEvent>().Publish(task);
         }
     }
 }

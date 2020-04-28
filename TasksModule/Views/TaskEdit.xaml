@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="TasksModule.Views.TaskEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TasksModule.Views"
+             mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,40,2" />
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="true">
+                            <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                                <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+                                </TextBlock>
+                            </Border>
+                            <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                                <Border BorderBrush="red" BorderThickness="1" />
+                            </AdornedElementPlaceholder>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="5">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" 
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Nazwa:" />
+        <Label Grid.Row="1" 
+               Grid.Column="0" 
+               Margin="5"
+               Content="Opis:" />
+        <Label Grid.Row="2"
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Data wykonania:" />
+        <Label Grid.Row="3" 
+               Grid.Column="0" 
+               Margin="5" 
+               Content="Pracownik:" />
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Margin="5"
+               Content="Status zadania:" />
+
+        <TextBox Grid.Row="0" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Width="200" 
+                 Text="{Binding Task.Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" 
+                 VerticalContentAlignment="Center" />
+        <TextBox Grid.Row="1" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 Height="100"
+                 Width="200"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 HorizontalScrollBarVisibility="Disabled"
+                 VerticalScrollBarVisibility="Auto"
+                 Text="{Binding Task.Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"  />
+        <DatePicker Grid.Row="2"
+                 Grid.Column="1" 
+                 Margin="5" 
+                 SelectedDate="{Binding Task.TaskDate, UpdateSourceTrigger=PropertyChanged}" 
+                 VerticalContentAlignment="Center" />
+        <ComboBox Grid.Row="3" 
+                 Grid.Column="1" 
+                 Margin="5" 
+                 VerticalContentAlignment="Center"
+                 SelectedItem="{Binding Employee, UpdateSourceTrigger=PropertyChanged}"
+                 ItemsSource="{Binding Employees}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <prism:InvokeCommandAction Command="{Binding SelectedEmployeeChangedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ComboBox>
+        <CheckBox Grid.Row="4"
+                  Grid.Column="1"
+                  Margin="5,10,5,5"
+                  IsThreeState="True"
+                  IsChecked="{Binding Task.IsSucceeded, UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</UserControl>

@@ -4,11 +4,9 @@ using Infrastructure.Models;
 using Infrastructure.ViewModelBases;
 using Prism.Commands;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Windows;
 
 namespace EmployeesModule.ViewModels
 {
@@ -20,6 +18,7 @@ namespace EmployeesModule.ViewModels
 
         #region commands
         public DelegateCommand SaveAndCloseCommand { get; set; }
+        public DelegateCommand CancelAndCloseViewCommand { get; set; }
         #endregion
 
         #region properties
@@ -59,6 +58,7 @@ namespace EmployeesModule.ViewModels
         private void RegisterCommands()
         {
             SaveAndCloseCommand = new DelegateCommand(OnSaveAndClose);
+            CancelAndCloseViewCommand = new DelegateCommand(OnCancelAndCloseViewCommand);
         }
 
         private void OnSaveAndClose()
@@ -70,6 +70,23 @@ namespace EmployeesModule.ViewModels
         private bool CanAddEmployee()
         {
             return Employee.IsValid();
+        }
+
+        private void OnCancelAndCloseViewCommand()
+        {
+            var result = MessageBox.Show("Czy na pewno chcesz anulować zmiany i zamknąć?", "Anuluj i zamknij", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == Employee.Id);
+                    Employee = employee;
+                    base.OnCloseView();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                default:
+                    break;
+            }
         }
         #endregion
 
@@ -90,7 +107,7 @@ namespace EmployeesModule.ViewModels
             if(navigationContext.Parameters.Count > 0)
             {
                 int id = navigationContext.Parameters.GetValue<int>("employeeId");
-                Employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == id);
+                Employee = new Employee(employeesRepository.Employees.FirstOrDefault(x => x.Id == id));
                 Title = $"Edycja {Employee.FirstName} {Employee.LastName}";
                 SaveButtonState = true;
             }

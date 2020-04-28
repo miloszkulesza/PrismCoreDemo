@@ -10,6 +10,7 @@ using Prism.Events;
 using Infrastructure.Events;
 using System;
 using Infrastructure.Consts;
+using System.Linq;
 
 namespace EmployeesModule.ViewModels
 {

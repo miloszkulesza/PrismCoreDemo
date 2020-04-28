@@ -21,13 +21,17 @@ namespace TasksModule
         public void OnInitialized(IContainerProvider containerProvider)
         {
             unityContainer.RegisterType<TasksListViewModel>(new ContainerControlledLifetimeManager());
+            unityContainer.RegisterType<TaskEditViewModel>(new ContainerControlledLifetimeManager());
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             ViewModelLocationProvider.Register<TasksListRibbonTab, TasksListViewModel>();
+            ViewModelLocationProvider.Register<TaskEditRibbonTab, TaskEditViewModel>();
             containerRegistry.RegisterForNavigation(typeof(TasksList), "TasksList");
             containerRegistry.RegisterForNavigation(typeof(TasksListRibbonTab), "TasksListRibbonTab");
+            containerRegistry.RegisterForNavigation(typeof(TaskEdit), "TaskEdit");
+            containerRegistry.RegisterForNavigation(typeof(TaskEditRibbonTab), "TaskEditRibbonTab");
         }
     }
 }

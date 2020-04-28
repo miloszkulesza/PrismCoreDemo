@@ -1,4 +1,5 @@
-﻿using Infrastructure.DataAccess;
+﻿using Infrastructure.Consts;
+using Infrastructure.DataAccess;
 using Infrastructure.Events;
 using Infrastructure.Models;
 using Infrastructure.ViewModelBases;
@@ -8,6 +9,7 @@ using Prism.Regions;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using TasksModule.Views;
 
 namespace TasksModule.ViewModels
@@ -21,17 +23,30 @@ namespace TasksModule.ViewModels
         #endregion
 
         #region commands
-        public DelegateCommand AddTaskCommand { get; set; }
         public DelegateCommand SelectionChangedCommand { get; set; }
+
+        public DelegateCommand AddTaskCommand { get; set; }
+        public DelegateCommand EditTaskCommand { get; set; }
+        public DelegateCommand RemoveTaskCommand { get; set; }
+        public DelegateCommand SuccessTaskCommand { get; set; }
+        public DelegateCommand FailTaskCommand { get; set; }
         #endregion
 
         #region properties
         public ObservableCollection<Task> Tasks { get; set; }
+
         private Task selectedTask;
         public Task SelectedTask
         {
             get { return selectedTask; }
             set { SetProperty(ref selectedTask, value); }
+        }
+
+        private bool deleteButtonState;
+        public bool DeleteButtonState
+        {
+            get { return deleteButtonState; }
+            set { SetProperty(ref deleteButtonState, value); }
         }
         #endregion
 
@@ -66,43 +81,82 @@ namespace TasksModule.ViewModels
         {
             AddTaskCommand = new DelegateCommand(OnAddTaskCommand);
             SelectionChangedCommand = new DelegateCommand(OnSelectionChangedCommand);
+            EditTaskCommand = new DelegateCommand(OnEditTaskCommand);
+            RemoveTaskCommand = new DelegateCommand(OnRemoveTaskCommand);
+            SuccessTaskCommand = new DelegateCommand(OnSuccessTaskCommand);
+            FailTaskCommand = new DelegateCommand(OnFailTaskCommand);
+        }
+
+        private void OnFailTaskCommand()
+        {
+            tasksRepository.TaskFail(SelectedTask);
+        }
+
+        private void OnSuccessTaskCommand()
+        {
+            tasksRepository.TaskSuccess(SelectedTask);
+        }
+
+        private void OnRemoveTaskCommand()
+        {
+            tasksRepository.Delete(SelectedTask);
+        }
+
+        private void OnEditTaskCommand()
+        {
+            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TaskEdit", UriKind.Relative));
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TaskEditRibbonTab", UriKind.Relative), new NavigationParameters($"?taskId={SelectedTask.Id}"));
         }
 
         private void OnSelectionChangedCommand()
         {
-
+            if (SelectedTask != null)
+                DeleteButtonState = true;
+            else
+                DeleteButtonState = false;
         }
 
         private void OnAddTaskCommand()
         {
-            throw new NotImplementedException();
+            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TaskEdit", UriKind.Relative));
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TaskEditRibbonTab", UriKind.Relative));
         }
         #endregion
 
         #region event handlers
         private void OnTaskFailedEvent(Task obj)
         {
-            throw new NotImplementedException();
+            Tasks.FirstOrDefault(x => x.Id == obj.Id).IsSucceeded = false;
         }
 
         private void OnTaskSucceededEvent(Task obj)
         {
-            throw new NotImplementedException();
+            Tasks.FirstOrDefault(x => x.Id == obj.Id).IsSucceeded = true;
         }
 
         private void OnTaskUpdatedEvent(Task obj)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < Tasks.Count; i++)
+            {
+                if (Tasks[i].Id == obj.Id)
+                {
+                    Tasks[i] = obj;
+                    var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == Tasks[i].EmployeeId);
+                    Tasks[i].Employee = $"{employee.FirstName} {employee.LastName}";
+                }
+            }
         }
 
         private void OnTaskAddedEvent(Task obj)
         {
-            throw new NotImplementedException();
+            var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == obj.EmployeeId);
+            obj.Employee = $"{employee.FirstName} {employee.LastName}";
+            Tasks.Add(obj);
         }
 
         private void OnTaskDeletedEvent(Task obj)
         {
-            throw new NotImplementedException();
+            Tasks.Remove(obj);
         }
         #endregion
     }

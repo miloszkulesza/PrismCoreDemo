@@ -1,15 +1,14 @@
-﻿<RibbonTab x:Class="EmployeesModule.Views.EmployeeEditRibbonTab"
+﻿<RibbonTab x:Class="TasksModule.Views.TaskEditRibbonTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EmployeesModule.Views"
+             xmlns:local="clr-namespace:TasksModule.Views"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             ContextualTabGroupHeader="Pracownicy"
              Header="{Binding Title}"
-             IsSelected="{Binding IsTabSelected}">
+             ContextualTabGroupHeader="Zadania">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/save.png" Label="Zapisz i zamknij" IsEnabled="{Binding SaveButtonState}" Command="{Binding SaveAndCloseCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CancelAndCloseViewCommand}" />

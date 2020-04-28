@@ -43,6 +43,21 @@ namespace Infrastructure.Models
             set { SetProperty(ref position, value); }
         }
 
+        public Employee()
+        {
+
+        }
+
+        public Employee(Employee employee)
+        {
+            Id = employee.Id;
+            FirstName = employee.FirstName;
+            LastName = employee.LastName;
+            Age = employee.Age;
+            Email = employee.Email;
+            Position = employee.Position;
+        }
+
         public string Error
         {
             get { throw new NotImplementedException(); }
@@ -152,6 +167,11 @@ namespace Infrastructure.Models
                 result = "Wprowadź stanowisko";
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
         }
     }
 }

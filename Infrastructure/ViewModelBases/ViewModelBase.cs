@@ -60,7 +60,7 @@ namespace Infrastructure.ViewModelBases
             CloseViewCommand = new DelegateCommand(OnCloseView);
         }
 
-        private void OnCloseView()
+        protected virtual void OnCloseView()
         {
             var ribbonTab = regionManager.Regions[RegionNames.RibbonRegion].Views.FirstOrDefault(x => x.GetType() == DefaultRibbonType);
             var view = regionManager.Regions[RegionNames.ViewRegion].Views.FirstOrDefault(x => x.GetType() == DefaultViewType);
