@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeesModule", "Employee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C48669EE-006A-4920-86D3-F27003F22248}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksModule", "TasksModule\TasksModule.csproj", "{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TasksModule", "TasksModule\TasksModule.csproj", "{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarModule", "CalendarModule\CalendarModule.csproj", "{0394F61E-C880-437A-880C-3CBED5D4593C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{514892D6-95F5-4C68-A8C4-569DEB1CC3BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0394F61E-C880-437A-880C-3CBED5D4593C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0394F61E-C880-437A-880C-3CBED5D4593C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0394F61E-C880-437A-880C-3CBED5D4593C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0394F61E-C880-437A-880C-3CBED5D4593C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

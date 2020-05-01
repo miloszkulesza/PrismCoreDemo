@@ -10,21 +10,11 @@ namespace Infrastructure.RegionAdapters
 {
     public class RibbonRegionAdapter : RegionAdapterBase<Ribbon>
     {
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        /// <param name="behaviorFactory">Allows the registration
-        /// of the default set of RegionBehaviors.</param>
         public RibbonRegionAdapter(IRegionBehaviorFactory behaviorFactory)
             : base(behaviorFactory)
         {
         }
 
-        /// <summary>
-        /// Adapts a WPF control to serve as a Prism IRegion. 
-        /// </summary>
-        /// <param name="region">The new region being used.</param>
-        /// <param name="regionTarget">The WPF control to adapt.</param>
         protected override void Adapt(IRegion region, Ribbon regionTarget)
         {
             region.Views.CollectionChanged += (sender, e) =>

@@ -15,6 +15,7 @@ namespace PrismCoreDemo.ViewModels
         public DelegateCommand EmployeesCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand TasksCommand { get; set; }
+        public DelegateCommand CalendarCommand { get; set; }
 
         public MainWindowViewModel(IRegionManager regionManager)
         {
@@ -28,6 +29,7 @@ namespace PrismCoreDemo.ViewModels
             EmployeesCommand = new DelegateCommand(OnEmployeesCommand);
             ExitCommand = new DelegateCommand(OnExitCommand);
             TasksCommand = new DelegateCommand(OnTasksCommand);
+            CalendarCommand = new DelegateCommand(OnCalendarCommand);
         }
 
         private void OnEmployeesCommand()
@@ -45,6 +47,12 @@ namespace PrismCoreDemo.ViewModels
         {
             regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TasksList", UriKind.Relative));
             regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TasksListRibbonTab", UriKind.Relative));
+        }
+
+        private void OnCalendarCommand()
+        {
+            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("Calendar", UriKind.Relative));
+            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("CalendarRibbonTab", UriKind.Relative));
         }
     }
 }

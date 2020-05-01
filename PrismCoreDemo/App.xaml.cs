@@ -1,4 +1,5 @@
-﻿using Infrastructure.DataAccess;
+﻿using CalendarModule;
+using Infrastructure.DataAccess;
 using Infrastructure.RegionAdapters;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -12,9 +13,6 @@ using System.Windows.Controls.Ribbon;
 
 namespace PrismCoreDemo
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : PrismApplication
     {
         protected override Window CreateShell()
@@ -43,6 +41,7 @@ namespace PrismCoreDemo
             base.ConfigureModuleCatalog(moduleCatalog);
             moduleCatalog.AddModule(typeof(EmployeesModule.EmployeesModule));
             moduleCatalog.AddModule(typeof(TasksModule.TasksModule));
+            moduleCatalog.AddModule(typeof(CalendarModule.CalendarModule));
         }
     }
 }

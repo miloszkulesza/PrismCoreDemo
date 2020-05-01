@@ -4,13 +4,11 @@ using Infrastructure.ViewModelBases;
 using Prism.Commands;
 using Prism.Regions;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using Infrastructure.DataAccess;
 using Prism.Events;
 using Infrastructure.Events;
 using System;
 using Infrastructure.Consts;
-using System.Linq;
 
 namespace EmployeesModule.ViewModels
 {

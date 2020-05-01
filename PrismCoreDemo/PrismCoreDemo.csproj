@@ -26,6 +26,7 @@
     <None Remove="Images\redo.png" />
     <None Remove="Images\remove.png" />
     <None Remove="Images\save.png" />
+    <None Remove="Images\schedule.png" />
     <None Remove="Images\success.png" />
     <None Remove="Images\undo.png" />
   </ItemGroup>
@@ -36,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CalendarModule\CalendarModule.csproj" />
     <ProjectReference Include="..\EmployeesModule\EmployeesModule.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\TasksModule\TasksModule.csproj" />
@@ -61,6 +63,7 @@
     <Resource Include="Images\redo.png" />
     <Resource Include="Images\remove.png" />
     <Resource Include="Images\save.png" />
+    <Resource Include="Images\schedule.png" />
     <Resource Include="Images\success.png" />
     <Resource Include="Images\undo.png" />
   </ItemGroup>
