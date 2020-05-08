@@ -1,5 +1,6 @@
 # PrismCoreDemo
-WPF demo app in .NET Core 3.1 using Prism 7
+WPF modular demo app in .NET Core 3.1 using Prism 7.
+There are 3 modules - Employees, Tasks, Calendar.
 
 ![Main window](https://i.imgur.com/4xwCdV6.png)
 ![Employees list](https://i.imgur.com/zA8lOun.png)
