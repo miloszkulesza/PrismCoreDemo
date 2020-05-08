@@ -102,14 +102,19 @@ namespace CalendarModule.ViewModels
         {
             Tasks.Add(obj);
             if (SelectedDate.ToShortDateString() == obj.TaskDate.ToShortDateString())
-                SelectedDateTasks.Add(obj);
+            {
+                SelectedDateTasks.Insert(0, obj);
+            }
+
         }
 
         private void OnTaskDeleted(Task obj)
         {
             Tasks.Remove(obj);
             if (SelectedDate.ToShortDateString() == obj.TaskDate.ToShortDateString())
+            {
                 SelectedDateTasks.Remove(obj);
+            }
         }
         #endregion
     }

@@ -66,7 +66,7 @@
                       HorizontalScrollBarVisibility="Auto"
                       Grid.Column="1">
             <ListView HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding SelectedDateTasks}"
+                      ItemsSource="{Binding SelectedDateTasks, UpdateSourceTrigger=PropertyChanged}"
                       SelectionMode="Single">
                 <ListView.View>
                     <GridView>
@@ -78,13 +78,6 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Nazwa" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="Opis" Width="250">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
                         <GridViewColumn Header="Pracownik" Width="Auto" DisplayMemberBinding="{Binding Employee}" />
                         <GridViewColumn Header="Stan" Width="Auto" CellTemplate="{StaticResource isSucceededDataTemplate}">
                         </GridViewColumn>

@@ -66,7 +66,7 @@ namespace TasksModule.ViewModels
                 var employee = this.employeesRepository.Employees.FirstOrDefault(x => x.Id == task.EmployeeId);
                 task.Employee = $"{employee.FirstName} {employee.LastName}";
             }
-            Tasks = new ObservableCollection<Task>(tasks);
+            Tasks = new ObservableCollection<Task>(tasks.OrderByDescending(x => x.TaskDate));
             this.eventAggregator.GetEvent<TaskAddedEvent>().Subscribe(OnTaskAddedEvent);
             this.eventAggregator.GetEvent<TaskDeletedEvent>().Subscribe(OnTaskDeletedEvent);
             this.eventAggregator.GetEvent<TaskUpdatedEvent>().Subscribe(OnTaskUpdatedEvent);
@@ -151,7 +151,7 @@ namespace TasksModule.ViewModels
         {
             var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == obj.EmployeeId);
             obj.Employee = $"{employee.FirstName} {employee.LastName}";
-            Tasks.Add(obj);
+            Tasks.Insert(0, obj);
         }
 
         private void OnTaskDeletedEvent(Task obj)
