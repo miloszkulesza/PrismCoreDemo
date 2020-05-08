@@ -51,8 +51,7 @@ namespace Infrastructure.DataAccess
                     task.Id = Tasks.LastOrDefault().Id + 1;
                 Tasks.Add(task);
                 eventAggregator.GetEvent<TaskAddedEvent>().Publish(task);
-                if(!Tasks.Any(x => x.TaskDate.ToShortDateString() == task.TaskDate.ToShortDateString()))
-                    eventAggregator.GetEvent<HighlightCalendarDateEvent>().Publish(task.TaskDate);
+                eventAggregator.GetEvent<HighlightCalendarDateEvent>().Publish(task.TaskDate);
             }
         }
 
