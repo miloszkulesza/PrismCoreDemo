@@ -28,6 +28,8 @@ namespace Infrastructure.DataAccess
         {
             Tasks.Remove(task);
             eventAggregator.GetEvent<TaskDeletedEvent>().Publish(task);
+            if(!Tasks.Any(x => x.TaskDate.ToShortDateString() == task.TaskDate.ToShortDateString()))
+                eventAggregator.GetEvent<RemoveHighlightCalendarDateEvent>().Publish(task.TaskDate);
         }
 
         public void Save(Task task)
@@ -43,9 +45,14 @@ namespace Infrastructure.DataAccess
             }
             else
             {
-                task.Id = Tasks.LastOrDefault().Id + 1;
+                if(Tasks.LastOrDefault() == null)
+                    task.Id = 1;
+                else
+                    task.Id = Tasks.LastOrDefault().Id + 1;
                 Tasks.Add(task);
                 eventAggregator.GetEvent<TaskAddedEvent>().Publish(task);
+                if(!Tasks.Any(x => x.TaskDate.ToShortDateString() == task.TaskDate.ToShortDateString()))
+                    eventAggregator.GetEvent<HighlightCalendarDateEvent>().Publish(task.TaskDate);
             }
         }
 

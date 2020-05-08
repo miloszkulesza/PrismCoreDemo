@@ -8,7 +8,8 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Header="{Binding Title}"
-             ContextualTabGroupHeader="Kalendarz">
+             ContextualTabGroupHeader="Kalendarz"
+             IsSelected="{Binding IsTabSelected}">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
