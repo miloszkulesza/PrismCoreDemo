@@ -8,7 +8,8 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Header="{Binding Title}"
-             ContextualTabGroupHeader="Zadania">
+             ContextualTabGroupHeader="Zadania"
+             IsSelected="{Binding IsTabSelected}">
     <RibbonGroup>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/save.png" Label="Zapisz i zamknij" IsEnabled="{Binding SaveButtonState}" Command="{Binding SaveAndCloseCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CancelAndCloseViewCommand}" />

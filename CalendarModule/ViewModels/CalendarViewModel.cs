@@ -48,10 +48,27 @@ namespace CalendarModule.ViewModels
             get { return selectedDateTasks; }
             set { SetProperty(ref selectedDateTasks, value); }
         }
+
+        private Task selectedTask;
+        public Task SelectedTask
+        {
+            get { return selectedTask; }
+            set { SetProperty(ref selectedTask, value); }
+        }
+
+        private bool successButtonState;
+        public bool SuccessButtonState
+        {
+            get { return successButtonState; }
+            set { SetProperty(ref successButtonState, value); }
+        }
         #endregion
 
         #region commands
         public DelegateCommand SelectedDateChangedCommand { get; set; }
+        public DelegateCommand SuccessTaskCommand { get; set; }
+        public DelegateCommand FailTaskCommand { get; set; }
+        public DelegateCommand SelectedTaskChangedCommand { get; set; }
         #endregion
 
         #region ctor
@@ -66,6 +83,7 @@ namespace CalendarModule.ViewModels
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<TaskAddedEvent>().Subscribe(OnTaskAdded);
             this.eventAggregator.GetEvent<TaskDeletedEvent>().Subscribe(OnTaskDeleted);
+            this.eventAggregator.GetEvent<TaskUpdatedEvent>().Subscribe(OnTaskUpdated);
             Title = "Kalendarz";
             RegisterCommands();
         }
@@ -75,11 +93,33 @@ namespace CalendarModule.ViewModels
         private void RegisterCommands()
         {
             SelectedDateChangedCommand = new DelegateCommand(OnSelectedDateChanged);
+            SuccessTaskCommand = new DelegateCommand(OnSuccessTaskCommand);
+            FailTaskCommand = new DelegateCommand(OnFailTaskCommand);
+            SelectedTaskChangedCommand = new DelegateCommand(OnSelectedTaskChanged);
         }
 
         private void OnSelectedDateChanged()
         {
             SelectedDateTasks = new ObservableCollection<Task>(Tasks.Where(x => x.TaskDate.ToShortDateString() == SelectedDate.ToShortDateString()).ToList());
+            SelectedTask = null;
+        }
+
+        private void OnFailTaskCommand()
+        {
+            tasksRepository.TaskFail(SelectedTask);
+        }
+
+        private void OnSuccessTaskCommand()
+        {
+            tasksRepository.TaskSuccess(SelectedTask);
+        }
+
+        private void OnSelectedTaskChanged()
+        {
+            if (SelectedTask != null)
+                SuccessButtonState = true;
+            else
+                SuccessButtonState = false;
         }
         #endregion
 
@@ -114,6 +154,23 @@ namespace CalendarModule.ViewModels
             if (SelectedDate.ToShortDateString() == obj.TaskDate.ToShortDateString())
             {
                 SelectedDateTasks.Remove(obj);
+            }
+        }
+
+        private void OnTaskUpdated(Task obj)
+        {
+            for(int i = 0; i < Tasks.Count; i++)
+            {
+                if (Tasks[i].Id == obj.Id)
+                    Tasks[i] = obj;
+            }
+            if(SelectedDate.ToShortDateString() == obj.TaskDate.ToShortDateString())
+            {
+                for (int i = 0; i < SelectedDateTasks.Count; i++)
+                {
+                    if (SelectedDateTasks[i].Id == obj.Id)
+                        SelectedDateTasks[i] = obj;
+                }
             }
         }
         #endregion

@@ -11,6 +11,8 @@
              ContextualTabGroupHeader="Kalendarz"
              IsSelected="{Binding IsTabSelected}">
     <RibbonGroup>
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/success.png" Label="Sukces" IsEnabled="{Binding SuccessButtonState}" Command="{Binding SuccessTaskCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/Images/fail.png" Label="Porażka" IsEnabled="{Binding SuccessButtonState}" Command="{Binding FailTaskCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

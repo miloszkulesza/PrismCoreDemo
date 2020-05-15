@@ -67,7 +67,13 @@
                       Grid.Column="1">
             <ListView HorizontalAlignment="Stretch"
                       ItemsSource="{Binding SelectedDateTasks, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionMode="Single">
+                      SelectionMode="Single"
+                      SelectedItem="{Binding SelectedTask, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <prism:InvokeCommandAction Command="{Binding SelectedTaskChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Data" Width="Auto">

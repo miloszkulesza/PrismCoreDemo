@@ -28,8 +28,6 @@ namespace TasksModule.ViewModels
         public DelegateCommand AddTaskCommand { get; set; }
         public DelegateCommand EditTaskCommand { get; set; }
         public DelegateCommand RemoveTaskCommand { get; set; }
-        public DelegateCommand SuccessTaskCommand { get; set; }
-        public DelegateCommand FailTaskCommand { get; set; }
         #endregion
 
         #region properties
@@ -83,18 +81,6 @@ namespace TasksModule.ViewModels
             SelectionChangedCommand = new DelegateCommand(OnSelectionChangedCommand);
             EditTaskCommand = new DelegateCommand(OnEditTaskCommand);
             RemoveTaskCommand = new DelegateCommand(OnRemoveTaskCommand);
-            SuccessTaskCommand = new DelegateCommand(OnSuccessTaskCommand);
-            FailTaskCommand = new DelegateCommand(OnFailTaskCommand);
-        }
-
-        private void OnFailTaskCommand()
-        {
-            tasksRepository.TaskFail(SelectedTask);
-        }
-
-        private void OnSuccessTaskCommand()
-        {
-            tasksRepository.TaskSuccess(SelectedTask);
         }
 
         private void OnRemoveTaskCommand()

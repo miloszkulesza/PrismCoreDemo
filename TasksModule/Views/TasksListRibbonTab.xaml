@@ -14,8 +14,6 @@
         <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj" Command="{Binding AddTaskCommand}"/>
         <RibbonButton LargeImageSource="pack://application:,,,/Images/remove.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveTaskCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/edit.png" Label="Edytuj" IsEnabled="{Binding DeleteButtonState}" Command="{Binding EditTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/success.png" Label="Sukces" IsEnabled="{Binding DeleteButtonState}" Command="{Binding SuccessTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/fail.png" Label="Porażka" IsEnabled="{Binding DeleteButtonState}" Command="{Binding FailTaskCommand}" />
         <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>
