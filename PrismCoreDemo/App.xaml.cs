@@ -1,9 +1,11 @@
 ﻿using CalendarModule;
+using Core.DataAccess;
 using Infrastructure.DataAccess;
-using Infrastructure.RegionAdapters;
+using Presentation.RegionAdapters;
+using Presentation.Services;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 using Prism.Unity;
 using PrismCoreDemo.Controls;
 using PrismCoreDemo.Views;
@@ -22,6 +24,8 @@ namespace PrismCoreDemo
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterSingleton<IUserDialogService, UserDialogService>();
+            containerRegistry.RegisterSingleton<IWorkspaceService, WorkspaceService>();
             containerRegistry.Register<Object, ShellRibbonTab>("ShellRibbonTab");
             containerRegistry.RegisterSingleton<IEmployeesRepository, EmployeesRepository>();
             containerRegistry.RegisterSingleton<ITasksRepository, TasksRepository>();

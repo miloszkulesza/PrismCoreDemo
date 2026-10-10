@@ -6,12 +6,11 @@
              xmlns:local="clr-namespace:TasksModule.Views"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
+             prism:ViewModelLocator.AutoWireViewModel="False"
              Header="{Binding Title}"
-             ContextualTabGroupHeader="Zadania"
-             IsSelected="{Binding IsTabSelected}">
+             ContextualTabGroupHeader="Zadania">
     <RibbonGroup>
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/save.png" Label="Zapisz i zamknij" IsEnabled="{Binding SaveButtonState}" Command="{Binding SaveAndCloseCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CancelAndCloseViewCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/save.png" Label="Zapisz i zamknij" Command="{Binding SaveAndCloseCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/close.png" Label="Zamknij" Command="{Binding CancelAndCloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

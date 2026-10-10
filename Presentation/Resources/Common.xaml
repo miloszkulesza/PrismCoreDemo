@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        <Style TargetType="ListView">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+        <DataTemplate x:Key="isSucceededDataTemplate">
+            <TextBlock x:Name="textBlock" />
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
+                    <Setter TargetName="textBlock" Property="Text" Value="Sukces" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
+                    <Setter TargetName="textBlock" Property="Text" Value="Porażka" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="{x:Null}">
+                    <Setter TargetName="textBlock" Property="Text" Value="Niezakończone" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <Style x:Key="TaskListItemStyle" TargetType="{x:Type ListViewItem}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
+                    <Setter Property="ListViewItem.Background" Value="OrangeRed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
+                    <Setter Property="ListViewItem.Background" Value="Green" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,40,2" />
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="true">
+                            <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                                <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
+                                </TextBlock>
+                            </Border>
+                            <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                                <Border BorderBrush="red" BorderThickness="1" />
+                            </AdornedElementPlaceholder>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ResourceDictionary>

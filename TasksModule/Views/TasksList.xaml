@@ -7,43 +7,20 @@
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <UserControl.Resources>
-        <Style TargetType="ListView">
-            <Setter Property="FontSize" Value="16" />
-        </Style>
-
-        <DataTemplate x:Key="isSucceededDataTemplate">
-            <TextBlock x:Name="textBlock" />
-            <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
-                    <Setter TargetName="textBlock" Property="Text" Value="Sukces" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
-                    <Setter TargetName="textBlock" Property="Text" Value="Porażka" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsSucceeded}" Value="{x:Null}">
-                    <Setter TargetName="textBlock" Property="Text" Value="Niezakończone" />
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
-
-        <Style TargetType="{x:Type ListViewItem}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsSucceeded}" Value="False">
-                    <Setter Property="ListViewItem.Background" Value="OrangeRed" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsSucceeded}" Value="True">
-                    <Setter Property="ListViewItem.Background" Value="Green" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Presentation;component/Resources/Common.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <ListView HorizontalAlignment="Stretch"
+                      ItemContainerStyle="{StaticResource TaskListItemStyle}"
                       ItemsSource="{Binding Tasks}"
                       SelectedItem="{Binding SelectedTask}"
                       SelectionMode="Single">

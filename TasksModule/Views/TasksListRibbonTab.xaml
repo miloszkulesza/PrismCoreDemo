@@ -8,12 +8,11 @@
              Header="Lista zadań"
              ContextualTabGroupHeader="Zadania"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
-             IsSelected="{Binding IsTabSelected}">
+             prism:ViewModelLocator.AutoWireViewModel="False">
     <RibbonGroup>
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/add.png" Label="Dodaj" Command="{Binding AddTaskCommand}"/>
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/remove.png" Label="Usuń" IsEnabled="{Binding DeleteButtonState}" Command="{Binding RemoveTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/edit.png" Label="Edytuj" IsEnabled="{Binding DeleteButtonState}" Command="{Binding EditTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/add.png" Label="Dodaj" Command="{Binding AddTaskCommand}"/>
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/remove.png" Label="Usuń" Command="{Binding RemoveTaskCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/edit.png" Label="Edytuj" Command="{Binding EditTaskCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

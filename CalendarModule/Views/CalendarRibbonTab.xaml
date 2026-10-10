@@ -6,13 +6,12 @@
              xmlns:local="clr-namespace:CalendarModule.Views"
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
+             prism:ViewModelLocator.AutoWireViewModel="False"
              Header="{Binding Title}"
-             ContextualTabGroupHeader="Kalendarz"
-             IsSelected="{Binding IsTabSelected}">
+             ContextualTabGroupHeader="Kalendarz">
     <RibbonGroup>
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/success.png" Label="Sukces" IsEnabled="{Binding SuccessButtonState}" Command="{Binding SuccessTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/fail.png" Label="Porażka" IsEnabled="{Binding SuccessButtonState}" Command="{Binding FailTaskCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/success.png" Label="Sukces" Command="{Binding SuccessTaskCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/fail.png" Label="Porażka" Command="{Binding FailTaskCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/close.png" Label="Zamknij" Command="{Binding CloseViewCommand}" />
     </RibbonGroup>
 </RibbonTab>

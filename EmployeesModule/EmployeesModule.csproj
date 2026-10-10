@@ -1,15 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>EmployeesModule</AssemblyName>
     <RootNamespace>EmployeesModule</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
-    <PackageReference Include="Unity" Version="5.11.6" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Presentation\Presentation.csproj" />
   </ItemGroup>
 </Project>

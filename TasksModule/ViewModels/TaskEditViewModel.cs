@@ -1,153 +1,94 @@
-﻿using Infrastructure.DataAccess;
-using Infrastructure.Models;
-using Infrastructure.ViewModelBases;
+﻿using Core.DataAccess;
+using Core.Models;
+using ApplicationCore.Events;
+using Presentation.Services;
+using Presentation.ViewModelBases;
 using Prism.Commands;
-using Prism.Regions;
+using Prism.Events;
+using Prism.Navigation;
+using Prism.Navigation.Regions;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows;
-using TasksModule.Views;
 
 namespace TasksModule.ViewModels
 {
-    public class TaskEditViewModel : ViewModelBase
+    public class TaskEditViewModel : EditorViewModelBase<Task>
     {
-        #region private members
         private readonly ITasksRepository tasksRepository;
         private readonly IEmployeesRepository employeesRepository;
-        #endregion
-
-        #region properties
-        private Task task;
-        public Task Task
-        {
-            get { return task; }
-            set { SetProperty(ref task, value); }
-        }
-
-        private string title;
-        public string Title
-        {
-            get { return title; }
-            set { SetProperty(ref title, value); }
-        }
-
-        private bool saveButtonState;
-        public bool SaveButtonState
-        {
-            get { return saveButtonState; }
-            set { SetProperty(ref saveButtonState, value); }
-        }
-
         private Employee employee;
-        public Employee Employee
+        private ObservableCollection<Employee> employees = new();
+        protected override string ParameterName => "taskId";
+        public override bool CanNavigateTo(NavigationParameters parameters) => true;
+        public override bool IsNavigationTarget(NavigationContext context)
         {
-            get { return employee; }
-            set { SetProperty(ref employee, value); }
+            int id = context.Parameters.GetValue<int>(ParameterName);
+            return id > 0 && Task?.Id == id;
         }
-
-        private ObservableCollection<Employee> employees;
+        public Task Task => Model;
+        public string Title => Task?.Id > 0 ? $"Edycja {Task.Name}" : "Nowe zadanie";
         public ObservableCollection<Employee> Employees
         {
-            get { return employees; }
-            set { SetProperty(ref employees, value); }
+            get => employees;
+            private set => SetProperty(ref employees, value);
         }
-        #endregion
+        public Employee Employee
+        {
+            get => employee;
+            set
+            {
+                if (SetProperty(ref employee, value))
+                {
+                    if (Task != null) Task.EmployeeId = value?.Id ?? 0;
+                    NotifyValidation();
+                }
+            }
+        }
+        public bool HasEmployees => Employees.Count > 0;
+        public string EmployeeMessage => HasEmployees ? "" : "Dodaj pracownika przed zapisaniem zadania.";
+        public DelegateCommand SelectedEmployeeChangedCommand { get; }
 
-        #region commands
-        public DelegateCommand SelectedEmployeeChangedCommand { get; set; }
-        public DelegateCommand SaveAndCloseCommand { get; set; }
-        public DelegateCommand CancelAndCloseViewCommand { get; set; }
-        #endregion
-
-        #region ctor
-        public TaskEditViewModel(
-            IRegionManager regionManager,
-            ITasksRepository tasksRepository,
-            IEmployeesRepository employeesRepository) : base(regionManager, typeof(TaskEdit), typeof(TaskEditRibbonTab))
+        public TaskEditViewModel(IWorkspaceService workspace, ITasksRepository tasksRepository,
+            IEmployeesRepository employeesRepository, IUserDialogService dialogs, IEventAggregator events) : base(workspace, dialogs)
         {
             this.tasksRepository = tasksRepository;
             this.employeesRepository = employeesRepository;
-            RegisterCommands();
-        }
-        #endregion
-
-        #region private methods
-        private void RegisterCommands()
-        {
-            SelectedEmployeeChangedCommand = new DelegateCommand(OnSelectedEmployeeChangedCommand);
-            SaveAndCloseCommand = new DelegateCommand(OnSaveAndClose);
-            CancelAndCloseViewCommand = new DelegateCommand(OnCancelAndCloseViewCommand);
+            SelectedEmployeeChangedCommand = new DelegateCommand(() => NotifyValidation());
+            events.GetEvent<EmployeeAddedEvent>().Subscribe(_ => RefreshEmployees());
+            events.GetEvent<EmployeeUpdatedEvent>().Subscribe(_ => RefreshEmployees());
+            events.GetEvent<EmployeeDeletedEvent>().Subscribe(_ => RefreshEmployees());
         }
 
-        private void OnCancelAndCloseViewCommand()
+        protected override Task Load(int id) => id == 0 ? new Task { TaskDate = DateTime.Today } :
+            new Task(tasksRepository.Tasks.FirstOrDefault(x => x.Id == id) ??
+                throw new InvalidOperationException("Zadanie zostało usunięte."));
+
+        protected override void OnModelLoaded()
         {
-            var result = MessageBox.Show("Czy na pewno chcesz anulować zmiany i zamknąć?", "Anuluj i zamknij", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    var task = tasksRepository.Tasks.FirstOrDefault(x => x.Id == Task.Id);
-                    Task = task;
-                    base.OnCloseView();
-                    break;
-                case MessageBoxResult.No:
-                    break;
-                default:
-                    break;
-            }
+            RefreshEmployees();
+            RaisePropertyChanged(nameof(Task));
+            RaisePropertyChanged(nameof(Title));
         }
 
-        private void OnSelectedEmployeeChangedCommand()
+        private void RefreshEmployees()
         {
-            Task.EmployeeId = Employee.Id;
-        }
-
-        private void OnSaveAndClose()
-        {
-            tasksRepository.Save(Task);
-            CloseViewCommand.Execute();
-        }
-
-        private bool CanAddTask()
-        {
-            return Task.IsValid();
-        }
-
-        private void Task_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (CanAddTask())
-                SaveButtonState = true;
-            else
-                SaveButtonState = false;
-        }
-        #endregion
-
-        #region override
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            base.OnNavigatedTo(navigationContext);
+            var employeeId = Task?.EmployeeId ?? 0;
             Employees = new ObservableCollection<Employee>(employeesRepository.Employees);
-            if (navigationContext.Parameters.Count > 0)
-            {
-                int id = navigationContext.Parameters.GetValue<int>("taskId");
-                Task = new Task(tasksRepository.Tasks.FirstOrDefault(x => x.Id == id));
-                Employee = Employees.FirstOrDefault(x => x.Id == Task.EmployeeId);
-                Title = $"Edycja {Task.Name}";
-                SaveButtonState = true;
-            }
-            else
-            {
-                Title = "Nowe zadanie";
-                Task = new Task();
-                Task.TaskDate = DateTime.Now;
-                SaveButtonState = false;
-                Employee = Employees.FirstOrDefault();
-                Task.EmployeeId = Employee.Id;
-            }
-            Task.PropertyChanged += Task_PropertyChanged;
+            Employee = Employees.FirstOrDefault(x => x.Id == employeeId);
+            // A new draft may choose the first available employee. Existing tasks keep their assignment.
+            if (Employee == null && Task?.Id == 0) Employee = Employees.FirstOrDefault();
+            RaisePropertyChanged(nameof(HasEmployees));
+            RaisePropertyChanged(nameof(EmployeeMessage));
+            NotifyValidation();
         }
-        #endregion
+
+        protected override bool CanSave() => Task?.IsValid() == true && Task.TaskDate != default &&
+            Employee != null && employeesRepository.Employees.Any(x => x.Id == Employee.Id);
+        protected override void Save()
+        {
+            if (!CanSave()) throw new InvalidOperationException("Wybierz istniejącego pracownika i popraw dane zadania.");
+            tasksRepository.Save(Task);
+        }
     }
 }

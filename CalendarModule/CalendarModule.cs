@@ -3,31 +3,20 @@ using CalendarModule.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Regions;
-using Unity;
-using Unity.Lifetime;
 
 namespace CalendarModule
 {
     public class CalendarModule : IModule
     {
-        private IUnityContainer unityContainer;
-
-        public CalendarModule(IUnityContainer unityContainer)
-        {
-            this.unityContainer = unityContainer;
-        }
-
-        public void OnInitialized(IContainerProvider containerProvider)
-        {
-            unityContainer.RegisterType<CalendarViewModel>(new ContainerControlledLifetimeManager());
-        }
+        public void OnInitialized(IContainerProvider containerProvider) { }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            ViewModelLocationProvider.Register<CalendarRibbonTab, CalendarViewModel>();
-            containerRegistry.RegisterForNavigation(typeof(Calendar), "Calendar");
-            containerRegistry.RegisterForNavigation(typeof(CalendarRibbonTab), "CalendarRibbonTab");
+            // One screen of each kind; the form and its Ribbon share that screen instance.
+            containerRegistry.RegisterSingleton<CalendarViewModel>();
+            ViewModelLocationProvider.Register<Calendar, CalendarViewModel>();
+            containerRegistry.RegisterForNavigation<Calendar>("Calendar");
+            containerRegistry.Register<object, CalendarRibbonTab>("CalendarRibbonTab");
         }
     }
 }

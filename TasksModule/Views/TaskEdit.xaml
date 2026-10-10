@@ -7,28 +7,13 @@
              mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <UserControl.Resources>
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0,2,40,2" />
-            <Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <DockPanel LastChildFill="true">
-                            <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
-                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
-                                <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
-                                </TextBlock>
-                            </Border>
-                            <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
-                                <Border BorderBrush="red" BorderThickness="1" />
-                            </AdornedElementPlaceholder>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Presentation;component/Resources/Common.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="5">
@@ -44,8 +29,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <TextBlock Grid.ColumnSpan="2" Grid.Row="5" Margin="5" Text="{Binding EmployeeMessage}" Foreground="DarkRed" />
         <Label Grid.Row="0" 
                Grid.Column="0" 
                Margin="5" 

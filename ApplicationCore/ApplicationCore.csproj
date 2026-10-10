@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Prism.Events" Version="9.0.537" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+</Project>

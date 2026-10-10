@@ -7,8 +7,8 @@
              Header="Home">
 
     <RibbonGroup x:Name="ClipboardGroup" Header="Moduły">
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/personal.png" Label="Pracownicy" Command="{Binding EmployeesCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/paste.png" Label="Zadania" Command="{Binding TasksCommand}" />
-        <RibbonButton LargeImageSource="pack://application:,,,/Images/schedule.png" Label="Kalendarz" Command="{Binding CalendarCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/personal.png" Label="Pracownicy" Command="{Binding EmployeesCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/paste.png" Label="Zadania" Command="{Binding TasksCommand}" />
+        <RibbonButton LargeImageSource="pack://application:,,,/PrismCoreDemo;component/Images/schedule.png" Label="Kalendarz" Command="{Binding CalendarCommand}" />
     </RibbonGroup>
 </RibbonTab>

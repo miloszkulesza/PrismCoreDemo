@@ -1,58 +1,25 @@
-﻿using Infrastructure.Consts;
+﻿using Presentation.Consts;
+using Presentation.Services;
 using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Regions;
-using System;
-using System.Windows;
-using System.Windows.Input;
+using Prism.Navigation.Regions;
 
 namespace PrismCoreDemo.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private readonly IRegionManager regionManager;
+        public DelegateCommand EmployeesCommand { get; }
+        public DelegateCommand ExitCommand { get; }
+        public DelegateCommand TasksCommand { get; }
+        public DelegateCommand CalendarCommand { get; }
 
-        public DelegateCommand EmployeesCommand { get; set; }
-        public DelegateCommand ExitCommand { get; set; }
-        public DelegateCommand TasksCommand { get; set; }
-        public DelegateCommand CalendarCommand { get; set; }
-
-        public MainWindowViewModel(IRegionManager regionManager)
+        public MainWindowViewModel(IRegionManager regionManager, IWorkspaceService workspace)
         {
-            this.regionManager = regionManager;
-            this.regionManager.RegisterViewWithRegion(RegionNames.RibbonRegion, typeof(Controls.ShellRibbonTab));
-            RegisterCommands();
-        }
-
-        private void RegisterCommands()
-        {
-            EmployeesCommand = new DelegateCommand(OnEmployeesCommand);
-            ExitCommand = new DelegateCommand(OnExitCommand);
-            TasksCommand = new DelegateCommand(OnTasksCommand);
-            CalendarCommand = new DelegateCommand(OnCalendarCommand);
-        }
-
-        private void OnEmployeesCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeesList", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeesListRibbonTab", UriKind.Relative));
-        }
-
-        private void OnExitCommand()
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void OnTasksCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TasksList", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TasksListRibbonTab", UriKind.Relative));
-        }
-
-        private void OnCalendarCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("Calendar", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("CalendarRibbonTab", UriKind.Relative));
+            regionManager.RegisterViewWithRegion(RegionNames.RibbonRegion, typeof(Controls.ShellRibbonTab));
+            EmployeesCommand = new DelegateCommand(() => workspace.Open("EmployeesList", "EmployeesListRibbonTab"));
+            TasksCommand = new DelegateCommand(() => workspace.Open("TasksList", "TasksListRibbonTab"));
+            CalendarCommand = new DelegateCommand(() => workspace.Open("Calendar", "CalendarRibbonTab"));
+            ExitCommand = new DelegateCommand(() => System.Windows.Application.Current.Shutdown());
         }
     }
 }

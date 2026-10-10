@@ -1,132 +1,72 @@
-﻿using Infrastructure.Models;
-using EmployeesModule.Views;
-using Infrastructure.ViewModelBases;
+﻿using Core.DataAccess;
+using Core.Models;
+using ApplicationCore.Events;
+using Presentation.Services;
+using Presentation.ViewModelBases;
 using Prism.Commands;
-using Prism.Regions;
-using System.Collections.ObjectModel;
-using Infrastructure.DataAccess;
 using Prism.Events;
-using Infrastructure.Events;
+using Prism.Navigation;
 using System;
-using Infrastructure.Consts;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace EmployeesModule.ViewModels
 {
     public class EmployeesListViewModel : ViewModelBase
     {
-        #region private members
-        private readonly IEmployeesRepository employeesRepository;
-        private readonly IEventAggregator eventAggregator;
-        #endregion
-
-        #region commands
-        public DelegateCommand SelectionChangedCommand { get; set; }
-        public DelegateCommand RemoveEmployeeCommand { get; set; }
-        public DelegateCommand AddEmployeeCommand { get; set; }
-        public DelegateCommand EditEmployeeCommand { get; set; }
-        #endregion
-
-        #region properties
-        private bool deleteButtonState;
-        public bool DeleteButtonState
-        {
-            get
-            {
-                return deleteButtonState;
-            }
-            set
-            {
-                SetProperty(ref deleteButtonState, value);
-            }
-        }
-
-        public static ObservableCollection<Employee> Employees { get; set; }
-
+        public string Title => "Lista pracowników";
+        private readonly IEmployeesRepository repository;
+        private readonly IUserDialogService dialogs;
+        public ObservableCollection<Employee> Employees { get; } = new();
         private Employee selectedEmployee;
         public Employee SelectedEmployee
         {
-            get
-            {
-                return selectedEmployee;
-            }
-            set
-            {
-                SetProperty(ref selectedEmployee, value);
-            }
+            get => selectedEmployee;
+            set { if (SetProperty(ref selectedEmployee, value)) OnSelectedItemChanged(); }
         }
-        #endregion
+        public bool DeleteButtonState => SelectedEmployee != null;
+        public DelegateCommand SelectionChangedCommand { get; }
+        public DelegateCommand RemoveEmployeeCommand { get; }
+        public DelegateCommand AddEmployeeCommand { get; }
+        public DelegateCommand EditEmployeeCommand { get; }
 
-        #region ctor
-        public EmployeesListViewModel(
-            IRegionManager regionManager,
-            IEmployeesRepository employeesRepository,
-            IEventAggregator eventAggregator): base(regionManager, typeof(EmployeesList), typeof(EmployeesListRibbonTab))
+        public EmployeesListViewModel(IWorkspaceService workspace, IEmployeesRepository repository,
+            IEventAggregator events, IUserDialogService dialogs) : base(workspace)
         {
-            this.employeesRepository = employeesRepository;
-            this.eventAggregator = eventAggregator;
-            Employees = new ObservableCollection<Employee>(employeesRepository.Employees);
-            DeleteButtonState = false;
-            RegisterCommands();
-            this.eventAggregator.GetEvent<EmployeeAddedEvent>().Subscribe(OnEmployeeAddedEvent);
-            this.eventAggregator.GetEvent<EmployeeUpdatedEvent>().Subscribe(OnEmployeeUpdatedEvent);
-            this.eventAggregator.GetEvent<EmployeeDeletedEvent>().Subscribe(OnEmployeeDeletedEvent);
-        }
-        #endregion
-
-        #region private methods
-        private void RegisterCommands()
-        {
+            this.repository = repository;
+            this.dialogs = dialogs;
             SelectionChangedCommand = new DelegateCommand(OnSelectedItemChanged);
-            RemoveEmployeeCommand = new DelegateCommand(OnRemoveSelectedEmployee);
-            AddEmployeeCommand = new DelegateCommand(OnAddEmployee);
-            EditEmployeeCommand = new DelegateCommand(OnEditEmployee);
+            RemoveEmployeeCommand = new DelegateCommand(Remove, () => SelectedEmployee != null);
+            AddEmployeeCommand = new DelegateCommand(() => workspace.Open("EmployeeEdit", "EmployeeEditRibbonTab"));
+            EditEmployeeCommand = new DelegateCommand(Edit, () => SelectedEmployee != null);
+            events.GetEvent<EmployeeAddedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<EmployeeUpdatedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<EmployeeDeletedEvent>().Subscribe(_ => Refresh());
+            Refresh();
         }
-
         private void OnSelectedItemChanged()
         {
-            if (SelectedEmployee != null)
-                DeleteButtonState = true;
-            else
-                DeleteButtonState = false;
+            RaisePropertyChanged(nameof(DeleteButtonState));
+            RemoveEmployeeCommand.RaiseCanExecuteChanged();
+            EditEmployeeCommand.RaiseCanExecuteChanged();
         }
-
-        private void OnRemoveSelectedEmployee()
+        private void Remove()
         {
-            employeesRepository.Delete(SelectedEmployee);
+            if (SelectedEmployee == null) return;
+            try { repository.Delete(SelectedEmployee); }
+            catch (InvalidOperationException e) { dialogs.ShowError(e.Message); }
         }
-
-        private void OnAddEmployee()
+        private void Edit()
         {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeeEdit", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeeEditRibbonTab", UriKind.Relative));
+            if (SelectedEmployee == null) return;
+            workspace.Open("EmployeeEdit", "EmployeeEditRibbonTab", new NavigationParameters { { "employeeId", SelectedEmployee.Id } });
         }
-
-        private void OnEditEmployee()
+        private void Refresh()
         {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("EmployeeEdit", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("EmployeeEditRibbonTab", UriKind.Relative), new NavigationParameters($"?employeeId={SelectedEmployee.Id}"));
+            var id = SelectedEmployee?.Id;
+            Employees.Clear();
+            foreach (var employee in repository.Employees) Employees.Add(employee);
+            SelectedEmployee = Employees.FirstOrDefault(x => x.Id == id);
         }
-        #endregion
-
-        #region event handlers
-        private void OnEmployeeDeletedEvent(Employee obj)
-        {
-            Employees.Remove(obj);
-        }
-
-        private void OnEmployeeUpdatedEvent(Employee obj)
-        {
-            for (int i = 0; i < Employees.Count; i++)
-            {
-                if (Employees[i].Id == obj.Id)
-                    Employees[i] = obj;
-            }
-        }
-
-        private void OnEmployeeAddedEvent(Employee obj)
-        {
-            Employees.Add(obj);
-        }
-        #endregion
     }
 }

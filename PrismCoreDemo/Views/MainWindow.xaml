@@ -9,7 +9,7 @@
         Title="Prism Core Demo" Height="450" Width="800"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -19,8 +19,8 @@
         <Ribbon Grid.Row="0" prism:RegionManager.RegionName="RibbonRegion">
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
-                    <RibbonApplicationMenuItem Header="Opcje" ImageSource="pack://application:,,,/Images/options.png" />
-                    <RibbonApplicationMenuItem Header="Wyjście" ImageSource="pack://application:,,,/Images/quit.png" Command="{Binding ExitCommand}" />
+                    <RibbonApplicationMenuItem Header="Opcje" ImageSource="pack://application:,,,/PrismCoreDemo;component/Images/options.png" />
+                    <RibbonApplicationMenuItem Header="Wyjście" ImageSource="pack://application:,,,/PrismCoreDemo;component/Images/quit.png" Command="{Binding ExitCommand}" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
             <Ribbon.ContextualTabGroups>

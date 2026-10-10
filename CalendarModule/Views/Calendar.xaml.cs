@@ -1,9 +1,6 @@
-﻿using Infrastructure.Events;
-using Prism.Events;
+﻿using CalendarModule.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -11,56 +8,53 @@ using System.Windows.Media;
 
 namespace CalendarModule.Views
 {
-    /// <summary>
-    /// Logika interakcji dla klasy CalendarView.xaml
-    /// </summary>
     public partial class Calendar : UserControl
     {
-        private readonly IEventAggregator eventAggregator;
-        private ObservableCollection<DateTime> significantDates;
-
-        public Calendar(IEventAggregator eventAggregator)
+        private CalendarViewModel viewModel;
+        public Calendar()
         {
             InitializeComponent();
-            this.eventAggregator = eventAggregator;
-            this.eventAggregator.GetEvent<HighlightCalendarDateEvent>().Subscribe(OnHighlightCalendarDate);
-            this.eventAggregator.GetEvent<RemoveHighlightCalendarDateEvent>().Subscribe(OnRemoveHighlightCalendarDate);
-            significantDates = new ObservableCollection<DateTime>();
+            Loaded += (_, _) => AttachViewModel();
+            Unloaded += (_, _) => DetachViewModel();
+            DataContextChanged += (_, _) => { if (IsLoaded) AttachViewModel(); };
         }
 
-        private void OnRemoveHighlightCalendarDate(DateTime obj)
+        private void AttachViewModel()
         {
-            if (significantDates.Any(x => x.ToShortDateString() == obj.ToShortDateString()))
-                significantDates.Remove(obj);
+            DetachViewModel();
+            viewModel = DataContext as CalendarViewModel;
+            if (viewModel != null) viewModel.SignificantDates.CollectionChanged += DatesChanged;
+            RefreshButtons(this);
         }
+        private void DetachViewModel()
+        {
+            if (viewModel != null) viewModel.SignificantDates.CollectionChanged -= DatesChanged;
+            viewModel = null;
+        }
+        private void DatesChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshButtons(this);
 
-        private void OnHighlightCalendarDate(DateTime obj)
+        private void RefreshButtons(DependencyObject parent)
         {
-            if(!significantDates.Any(x => x.ToShortDateString() == obj.ToShortDateString()))
-                significantDates.Add(obj);
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is CalendarDayButton button) HighlightDay(button);
+                RefreshButtons(child);
+            }
         }
-
-        private void calendarButton_Loaded(object sender, EventArgs e)
+        private void HighlightDay(CalendarDayButton button)
         {
-            CalendarDayButton button = (CalendarDayButton)sender;
-            DateTime date = (DateTime)button.DataContext;
-            HighlightDay(button, date);
-            button.DataContextChanged += new DependencyPropertyChangedEventHandler(calendarButton_DataContextChanged);
+            button.Background = button.DataContext is DateTime date && viewModel?.SignificantDates.Contains(date.Date) == true
+                ? Brushes.OrangeRed : Brushes.Transparent;
         }
-
-        private void HighlightDay(CalendarDayButton button, DateTime date)
+        private void calendarButton_Loaded(object sender, RoutedEventArgs e)
         {
-            if (significantDates.Contains(date))
-                button.Background = Brushes.OrangeRed;
-            else
-                button.Background = Brushes.Transparent;
+            var button = (CalendarDayButton)sender;
+            button.DataContextChanged -= calendarButton_DataContextChanged;
+            button.DataContextChanged += calendarButton_DataContextChanged;
+            HighlightDay(button);
         }
-
-        private void calendarButton_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            CalendarDayButton button = (CalendarDayButton)sender;
-            DateTime date = (DateTime)button.DataContext;
-            HighlightDay(button, date);
-        }
+        private void calendarButton_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e) =>
+            HighlightDay((CalendarDayButton)sender);
     }
 }

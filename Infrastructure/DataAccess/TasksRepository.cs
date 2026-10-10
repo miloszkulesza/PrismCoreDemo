@@ -1,78 +1,64 @@
-﻿using Infrastructure.Events;
-using Infrastructure.Models;
+﻿using Core.DataAccess;
+using Core.Models;
+using ApplicationCore.Events;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Infrastructure.DataAccess
 {
     public class TasksRepository : ITasksRepository
     {
-        private readonly IEventAggregator eventAggregator;
-
-        public TasksRepository(IEventAggregator eventAggregator)
+        private readonly IEventAggregator events;
+        private readonly List<Task> tasks = new()
         {
-            this.eventAggregator = eventAggregator;
-        }
-
-        public IList<Task> Tasks { get; } = new List<Task>
-        {
-            new Task { Id = 1, EmployeeId = 1, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 27), IsSucceeded = null },
+            new Task { Id = 1, EmployeeId = 1, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 27) },
             new Task { Id = 2, EmployeeId = 3, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 24), IsSucceeded = true },
             new Task { Id = 3, EmployeeId = 2, Description = "Zrobić tak żeby było dobrze", Name = "Zadanie", TaskDate = new DateTime(2020, 4, 20), IsSucceeded = false }
         };
+        private int nextId = 4;
+        public IReadOnlyList<Task> Tasks => tasks.Select(x => new Task(x)).ToList().AsReadOnly();
+        public TasksRepository(IEventAggregator events) => this.events = events;
 
         public void Delete(Task task)
         {
-            Tasks.Remove(task);
-            eventAggregator.GetEvent<TaskDeletedEvent>().Publish(task);
-            if(!Tasks.Any(x => x.TaskDate.ToShortDateString() == task.TaskDate.ToShortDateString()))
-                eventAggregator.GetEvent<RemoveHighlightCalendarDateEvent>().Publish(task.TaskDate);
+            ArgumentNullException.ThrowIfNull(task);
+            var existing = tasks.FirstOrDefault(x => x.Id == task.Id);
+            if (existing == null) return;
+            tasks.Remove(existing);
+            events.GetEvent<TaskDeletedEvent>().Publish(new Task(existing));
         }
 
         public void Save(Task task)
         {
-            if (Tasks.Any(x => x.Id == task.Id))
+            ArgumentNullException.ThrowIfNull(task);
+            if (!task.IsValid() || task.EmployeeId <= 0 || task.TaskDate == default)
+                throw new ArgumentException("Wprowadź poprawne dane zadania, datę i pracownika.", nameof(task));
+            var index = tasks.FindIndex(x => x.Id == task.Id);
+            if (index >= 0)
             {
-                for (int i = 0; i < Tasks.Count; i++)
-                {
-                    if (Tasks[i].Id == task.Id)
-                        Tasks[i] = task;
-                }
-                eventAggregator.GetEvent<TaskUpdatedEvent>().Publish(task);
+                tasks[index] = new Task(task);
+                events.GetEvent<TaskUpdatedEvent>().Publish(new Task(task));
             }
             else
             {
-                if(Tasks.LastOrDefault() == null)
-                    task.Id = 1;
-                else
-                    task.Id = Tasks.LastOrDefault().Id + 1;
-                Tasks.Add(task);
-                eventAggregator.GetEvent<TaskAddedEvent>().Publish(task);
-                eventAggregator.GetEvent<HighlightCalendarDateEvent>().Publish(task.TaskDate);
+                task.Id = nextId++;
+                tasks.Add(new Task(task));
+                events.GetEvent<TaskAddedEvent>().Publish(new Task(task));
             }
         }
 
-        public void TaskFail(Task task)
+        public void TaskSuccess(Task task) => SetStatus(task, true);
+        public void TaskFail(Task task) => SetStatus(task, false);
+        private void SetStatus(Task task, bool succeeded)
         {
-            for (int i = 0; i < Tasks.Count; i++)
-            {
-                if (Tasks[i].Id == task.Id)
-                    Tasks[i].IsSucceeded = false;
-            }
-            eventAggregator.GetEvent<TaskFailedEvent>().Publish(task);
-        }
-
-        public void TaskSuccess(Task task)
-        {
-            for (int i = 0; i < Tasks.Count; i++)
-            {
-                if (Tasks[i].Id == task.Id)
-                    Tasks[i].IsSucceeded = true;
-            }
-            eventAggregator.GetEvent<TaskSucceededEvent>().Publish(task);
+            ArgumentNullException.ThrowIfNull(task);
+            var existing = tasks.FirstOrDefault(x => x.Id == task.Id);
+            if (existing == null) return;
+            existing.IsSucceeded = succeeded;
+            if (succeeded) events.GetEvent<TaskSucceededEvent>().Publish(new Task(existing));
+            else events.GetEvent<TaskFailedEvent>().Publish(new Task(existing));
         }
     }
 }

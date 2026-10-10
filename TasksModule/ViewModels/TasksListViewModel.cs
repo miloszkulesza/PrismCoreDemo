@@ -1,149 +1,72 @@
-﻿using Infrastructure.Consts;
-using Infrastructure.DataAccess;
-using Infrastructure.Events;
-using Infrastructure.Models;
-using Infrastructure.ViewModelBases;
+﻿using Core.DataAccess;
+using ApplicationCore.Events;
+using Presentation.Models;
+using Presentation.Services;
+using Presentation.ViewModelBases;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Regions;
-using System;
+using Prism.Navigation;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using TasksModule.Views;
 
 namespace TasksModule.ViewModels
 {
     public class TasksListViewModel : ViewModelBase
     {
-        #region pivate members
-        private readonly IEventAggregator eventAggregator;
-        private readonly ITasksRepository tasksRepository;
-        private readonly IEmployeesRepository employeesRepository;
-        #endregion
-
-        #region commands
-        public DelegateCommand SelectionChangedCommand { get; set; }
-
-        public DelegateCommand AddTaskCommand { get; set; }
-        public DelegateCommand EditTaskCommand { get; set; }
-        public DelegateCommand RemoveTaskCommand { get; set; }
-        #endregion
-
-        #region properties
-        public ObservableCollection<Task> Tasks { get; set; }
-
-        private Task selectedTask;
-        public Task SelectedTask
+        public string Title => "Lista zadań";
+        private readonly ITasksRepository tasks;
+        private readonly IEmployeesRepository employees;
+        public ObservableCollection<TaskItem> Tasks { get; } = new();
+        private TaskItem selectedTask;
+        public TaskItem SelectedTask
         {
-            get { return selectedTask; }
-            set { SetProperty(ref selectedTask, value); }
+            get => selectedTask;
+            set { if (SetProperty(ref selectedTask, value)) OnSelectionChanged(); }
         }
+        public bool DeleteButtonState => SelectedTask != null;
+        public DelegateCommand SelectionChangedCommand { get; }
+        public DelegateCommand AddTaskCommand { get; }
+        public DelegateCommand EditTaskCommand { get; }
+        public DelegateCommand RemoveTaskCommand { get; }
 
-        private bool deleteButtonState;
-        public bool DeleteButtonState
+        public TasksListViewModel(IWorkspaceService workspace, IEventAggregator events,
+            ITasksRepository tasks, IEmployeesRepository employees) : base(workspace)
         {
-            get { return deleteButtonState; }
-            set { SetProperty(ref deleteButtonState, value); }
+            this.tasks = tasks;
+            this.employees = employees;
+            SelectionChangedCommand = new DelegateCommand(OnSelectionChanged);
+            AddTaskCommand = new DelegateCommand(() => workspace.Open("TaskEdit", "TaskEditRibbonTab"));
+            EditTaskCommand = new DelegateCommand(Edit, () => SelectedTask != null);
+            RemoveTaskCommand = new DelegateCommand(() => { if (SelectedTask != null) tasks.Delete(SelectedTask); }, () => SelectedTask != null);
+            events.GetEvent<TaskAddedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<TaskUpdatedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<TaskDeletedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<TaskSucceededEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<TaskFailedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<EmployeeUpdatedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<EmployeeDeletedEvent>().Subscribe(_ => Refresh());
+            events.GetEvent<EmployeeAddedEvent>().Subscribe(_ => Refresh());
+            Refresh();
         }
-        #endregion
-
-        #region ctor
-        public TasksListViewModel(
-            IRegionManager regionManager,
-            IEventAggregator eventAggregator,
-            ITasksRepository tasksRepository,
-            IEmployeesRepository employeesRepository): base(regionManager, typeof(TasksList), typeof(TasksListRibbonTab))
+        private void OnSelectionChanged()
         {
-            this.eventAggregator = eventAggregator;
-            this.tasksRepository = tasksRepository;
-            this.employeesRepository = employeesRepository;
-            var tasks = this.tasksRepository.Tasks;
-            foreach(var task in tasks)
-            {
-                var employee = this.employeesRepository.Employees.FirstOrDefault(x => x.Id == task.EmployeeId);
-                task.Employee = $"{employee.FirstName} {employee.LastName}";
-            }
-            Tasks = new ObservableCollection<Task>(tasks.OrderByDescending(x => x.TaskDate));
-            this.eventAggregator.GetEvent<TaskAddedEvent>().Subscribe(OnTaskAddedEvent);
-            this.eventAggregator.GetEvent<TaskDeletedEvent>().Subscribe(OnTaskDeletedEvent);
-            this.eventAggregator.GetEvent<TaskUpdatedEvent>().Subscribe(OnTaskUpdatedEvent);
-            this.eventAggregator.GetEvent<TaskSucceededEvent>().Subscribe(OnTaskSucceededEvent);
-            this.eventAggregator.GetEvent<TaskFailedEvent>().Subscribe(OnTaskFailedEvent);
-            RegisterCommands();
+            RaisePropertyChanged(nameof(DeleteButtonState));
+            EditTaskCommand.RaiseCanExecuteChanged();
+            RemoveTaskCommand.RaiseCanExecuteChanged();
         }
-        #endregion
-
-        #region private methods
-        private void RegisterCommands()
+        private void Edit()
         {
-            AddTaskCommand = new DelegateCommand(OnAddTaskCommand);
-            SelectionChangedCommand = new DelegateCommand(OnSelectionChangedCommand);
-            EditTaskCommand = new DelegateCommand(OnEditTaskCommand);
-            RemoveTaskCommand = new DelegateCommand(OnRemoveTaskCommand);
+            if (SelectedTask == null) return;
+            workspace.Open("TaskEdit", "TaskEditRibbonTab", new NavigationParameters { { "taskId", SelectedTask.Id } });
         }
-
-        private void OnRemoveTaskCommand()
+        private void Refresh()
         {
-            tasksRepository.Delete(SelectedTask);
+            var id = SelectedTask?.Id;
+            var people = employees.Employees;
+            Tasks.Clear();
+            foreach (var task in tasks.Tasks.OrderByDescending(x => x.TaskDate))
+                Tasks.Add(new TaskItem(task, people));
+            SelectedTask = Tasks.FirstOrDefault(x => x.Id == id);
         }
-
-        private void OnEditTaskCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TaskEdit", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TaskEditRibbonTab", UriKind.Relative), new NavigationParameters($"?taskId={SelectedTask.Id}"));
-        }
-
-        private void OnSelectionChangedCommand()
-        {
-            if (SelectedTask != null)
-                DeleteButtonState = true;
-            else
-                DeleteButtonState = false;
-        }
-
-        private void OnAddTaskCommand()
-        {
-            regionManager.RequestNavigate(RegionNames.ViewRegion, new Uri("TaskEdit", UriKind.Relative));
-            regionManager.RequestNavigate(RegionNames.RibbonRegion, new Uri("TaskEditRibbonTab", UriKind.Relative));
-        }
-        #endregion
-
-        #region event handlers
-        private void OnTaskFailedEvent(Task obj)
-        {
-            Tasks.FirstOrDefault(x => x.Id == obj.Id).IsSucceeded = false;
-        }
-
-        private void OnTaskSucceededEvent(Task obj)
-        {
-            Tasks.FirstOrDefault(x => x.Id == obj.Id).IsSucceeded = true;
-        }
-
-        private void OnTaskUpdatedEvent(Task obj)
-        {
-            for (int i = 0; i < Tasks.Count; i++)
-            {
-                if (Tasks[i].Id == obj.Id)
-                {
-                    Tasks[i] = obj;
-                    var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == Tasks[i].EmployeeId);
-                    Tasks[i].Employee = $"{employee.FirstName} {employee.LastName}";
-                }
-            }
-        }
-
-        private void OnTaskAddedEvent(Task obj)
-        {
-            var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == obj.EmployeeId);
-            obj.Employee = $"{employee.FirstName} {employee.LastName}";
-            Tasks.Insert(0, obj);
-        }
-
-        private void OnTaskDeletedEvent(Task obj)
-        {
-            Tasks.Remove(obj);
-        }
-        #endregion
     }
 }

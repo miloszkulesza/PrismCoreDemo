@@ -1,124 +1,42 @@
-﻿using EmployeesModule.Views;
-using Infrastructure.DataAccess;
-using Infrastructure.Models;
-using Infrastructure.ViewModelBases;
-using Prism.Commands;
-using Prism.Regions;
-using System.ComponentModel;
+﻿using Core.DataAccess;
+using Core.Models;
+using Prism.Navigation;
+using Prism.Navigation.Regions;
+using Presentation.Services;
+using Presentation.ViewModelBases;
+using System;
 using System.Linq;
-using System.Windows;
 
 namespace EmployeesModule.ViewModels
 {
-    public class EmployeeEditViewModel : ViewModelBase 
+    public class EmployeeEditViewModel : EditorViewModelBase<Employee>
     {
-        #region private members
         private readonly IEmployeesRepository employeesRepository;
-        #endregion
+        protected override string ParameterName => "employeeId";
+        public Employee Employee => Model;
+        public string Title => Employee?.Id > 0 ? $"Edycja {Employee.FirstName} {Employee.LastName}" : "Nowy pracownik";
 
-        #region commands
-        public DelegateCommand SaveAndCloseCommand { get; set; }
-        public DelegateCommand CancelAndCloseViewCommand { get; set; }
-        #endregion
+        public EmployeeEditViewModel(IWorkspaceService workspace, IEmployeesRepository employeesRepository, IUserDialogService dialogs)
+            : base(workspace, dialogs) => this.employeesRepository = employeesRepository;
 
-        #region properties
-        private string title;
-        public string Title
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            get { return title; }
-            set { SetProperty(ref title, value); }
+            int id = navigationContext.Parameters.GetValue<int>(ParameterName);
+            return id > 0 && Employee?.Id == id;
         }
 
-        private Employee employee;
-        public Employee Employee
-        {
-            get { return employee; }
-            set { SetProperty(ref employee, value); }
-        }
+        // Opening another employee leaves this draft in its own tab.
+        public override bool CanNavigateTo(NavigationParameters parameters) => true;
 
-        private bool saveButtonState;
-        public bool SaveButtonState
+        protected override Employee Load(int id) => id == 0 ? new Employee() :
+            new Employee(employeesRepository.Employees.FirstOrDefault(x => x.Id == id) ??
+                throw new InvalidOperationException("Pracownik został usunięty."));
+        protected override void OnModelLoaded()
         {
-            get { return saveButtonState; }
-            set { SetProperty(ref saveButtonState, value); }
+            RaisePropertyChanged(nameof(Employee));
+            RaisePropertyChanged(nameof(Title));
         }
-        #endregion
-
-        #region ctor
-        public EmployeeEditViewModel(
-            IRegionManager regionManager,
-            IEmployeesRepository employeesRepository): base(regionManager, typeof(EmployeeEdit), typeof(EmployeeEditRibbonTab))
-        {
-            this.employeesRepository = employeesRepository;
-            RegisterCommands();
-        }
-        #endregion
-
-        #region private methods
-        private void RegisterCommands()
-        {
-            SaveAndCloseCommand = new DelegateCommand(OnSaveAndClose);
-            CancelAndCloseViewCommand = new DelegateCommand(OnCancelAndCloseViewCommand);
-        }
-
-        private void OnSaveAndClose()
-        {
-            employeesRepository.Save(employee);
-            CloseViewCommand.Execute();
-        }
-
-        private bool CanAddEmployee()
-        {
-            return Employee.IsValid();
-        }
-
-        private void OnCancelAndCloseViewCommand()
-        {
-            var result = MessageBox.Show("Czy na pewno chcesz anulować zmiany i zamknąć?", "Anuluj i zamknij", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    var employee = employeesRepository.Employees.FirstOrDefault(x => x.Id == Employee.Id);
-                    Employee = employee;
-                    base.OnCloseView();
-                    break;
-                case MessageBoxResult.No:
-                    break;
-                default:
-                    break;
-            }
-        }
-        #endregion
-
-        #region event handlers
-        private void Employee_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (CanAddEmployee())
-                SaveButtonState = true;
-            else
-                SaveButtonState = false;
-        }
-        #endregion
-
-        #region override
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            base.OnNavigatedTo(navigationContext);
-            if(navigationContext.Parameters.Count > 0)
-            {
-                int id = navigationContext.Parameters.GetValue<int>("employeeId");
-                Employee = new Employee(employeesRepository.Employees.FirstOrDefault(x => x.Id == id));
-                Title = $"Edycja {Employee.FirstName} {Employee.LastName}";
-                SaveButtonState = true;
-            }
-            else
-            {
-                Title = "Nowy pracownik";
-                Employee = new Employee();
-                SaveButtonState = false;
-            }
-            Employee.PropertyChanged += Employee_PropertyChanged;
-        }
-        #endregion
+        protected override bool CanSave() => Employee?.IsValid() == true;
+        protected override void Save() => employeesRepository.Save(Employee);
     }
 }
